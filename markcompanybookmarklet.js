@@ -38,9 +38,13 @@
 			    return html;
 			}
 
+			function script_response(result) {
+			    console.log('Response : ' + result);
+			}
+
 			function getUrl(source_url, answer) {
 			    appId = 'AKfycbz6ysLKpqYMzLBPhKaHXqFmS4OSeuf1yXpgUUqjN_xMKWbM0VY';
-			    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&answer='+  answer +'&reviewer=Main';
+			    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&answer='+  answer +'&reviewer=Main&prefix=script_response';
 			    return url;
 			}
 
