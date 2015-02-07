@@ -44,7 +44,7 @@
 
 			function getUrl(source_url, answer) {
 			    appId = 'AKfycbz6ysLKpqYMzLBPhKaHXqFmS4OSeuf1yXpgUUqjN_xMKWbM0VY';
-			    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&answer='+  answer +'&reviewer=Main&prefix=script_response';
+			    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&answer='+  answer +'&reviewer=Main';
 			    return url;
 			}
 
@@ -58,7 +58,20 @@
 			    if (r !== null) {
 			        url = getUrl(source_url, r);
 			        console.log('Submitting a request to google apps URL:' + url);
-			        $.get( url);
+			        /* $.get( url); */
+
+			        $.ajax({
+			          type:'GET',
+			          url: url,
+			          data: null,
+			          dataType: "jsonp"
+			        })
+			        .done (function (data) {
+			           console.log("Call succeeded");
+			        })
+			        .fail (function ( jqXHR) {
+			           console.log("Call failed");
+			        });
 			    }
 			}
 
