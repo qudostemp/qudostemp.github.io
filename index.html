@@ -1,1 +1,50 @@
-Hello World
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Gastown DataSciences Bookmarklet</title>
+	<style>
+		body {
+			background: #eee;
+			margin: 0;
+			padding: 0;
+			font: 18px/24px Georgia, Serif;
+			color: #555;
+		}
+		
+		h1 {
+			color: black;
+			font: bold 24px/24px Verdana, sans-serif;
+			text-shadow: 0 1px 0 white;
+		}
+		
+		div {
+			margin: 20px auto;
+			min-width: 460px;
+			max-width: 720px;
+			width: 66%;
+		}
+		
+		strong {
+			font-weight: bold;
+			color: black;
+		}
+		
+		.btn {
+			font-family: Verdana, sans;
+			background: #ddd;
+			padding: 10px 20px;
+			border: 1px dashed #aaa;
+		} 
+	</style>
+</head>
+<body>
+	<div>
+	<h1>Gastown DataSciences Bookmarklet</h1>
+	
+	<p>Some instructions</p>
+	
+	<p>To use the bookmarklet, simply <strong>drag the &ldquo;Mark company bookmarklet&rdquo; link below to your browser bookmark toolbar</strong> (or save it anywhere in your bookmarks or favorites). </p>
+	
+	<p style="margin: 40px; text-align: center;"><a class="btn" href="javascript:ytplayer=document.getElementById('movie_player');ytplayer.pauseVideo();void(window.open('http://www.youtube.com/watch_popup'+document.location.search+'&start='+Math.floor(ytplayer.getCurrentTime()),'_blank','height=360,width=640'))">YouTube Pop-Up</a></p>
+</div>
+</body>
