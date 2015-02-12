@@ -45,29 +45,59 @@ $(document).ready(function() {
         evt.preventDefault();
         var email = $("#user-email").val();
         if (email){
-        	var code = "if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src='http://rajeevs.github.io/markcompanybookmarklet.js?';};" + "window.qudos_bookmarklet_email = '" + email + "';";
-        	console.log(code);
+            var email_code = "window.qudos_bookmarklet_email = '" + email + "';";
+
+        	var markCompanyBookmarkletCode = "if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src='http://rajeevs.github.io/markcompanybookmarklet.js?';};";
+            markCompanyBookmarkletCode += email_code;
+
+            var addClientBookmarkletCode = "if(window.clientBookmarklet!==undefined){clientBookmarklet();}else{document.body.appendChild(document.createElement('script')).src='http://rajeevs.github.io/addclientbookmarklet.js?';};";
+            addClientBookmarkletCode += email_code;
+
+        	console.log(markCompanyBookmarkletCode);
+            console.log(addClientBookmarkletCode);
+
         	var $result;
-	        if (!$.trim(code)) {
-	            alert('Error generating bookmarklet!');
+	        if (!$.trim(markCompanyBookmarkletCode) || !$.trim(addClientBookmarkletCode)) {
+	            alert('Error generating bookmarklets!');
 	            return;
 	        }
-	        code = asBookmarklet(code, false, false);
-	        console.log(code);
-	        $result = $('<div>', {'class': 'result', 
-	    						  'id': 'bookmarklet-section'}).append(
+
+	        markCompanyBookmarkletCode = asBookmarklet(markCompanyBookmarkletCode, false, false);
+	        console.log(markCompanyBookmarkletCode);
+
+            addClientBookmarkletCode = asBookmarklet(addClientBookmarkletCode, false, false);
+            console.log(addClientBookmarkletCode);
+
+            function createBookMarklet(email, bookmarkletCode, name){
+                return $('<p>', {'html': '<em>Successfully generated bookmarklet!</em>&nbsp; for :' + email + '. Move this '}).append(
+                    $('<a/>', {
+                        'class': 'bookmarklet',
+                        href: bookmarkletCode,
+                        text: name
+                    })).append(' to the bookmarks bar');
+            }
+
+            /* 
+	        $result = $('<div>', {'class': 'bookmarklets-section', 
+	    						  'id': 'bookmarklets'}).append(
 	            $('<p>', {'html': '<em>Successfully generated bookmarklet!</em>&nbsp; for :' + email + '. Move this '}).append(
 	                $('<a/>', {
 	                    'class': 'bookmarklet',
-	                    href: code,
+	                    href: markCompanyBookmarkletCode,
 	                    text: 'Mark company bookmarklet'
 	                })).append(' to the bookmarks bar')
-	        );
+	        ); */
+
+            $result = $('<div>', {'class': 'bookmarklets-section', 
+                                  'id': 'bookmarklets'})
+                                .append(createBookMarklet(email, markCompanyBookmarkletCode, 'Mark company bookmarklet'))
+                                .append(createBookMarklet(email, addClientBookmarkletCode, 'Add client bookmarklet'));
 
 	    	console.log($result);
-	    	if ($(".result")) {
-	    		$(".result").remove();
+	    	if ($(".bookmarklets-section")) {
+	    		$(".bookmarklets-section").remove();
 	    	}
+
 	    	$("#result-section").append($result);
 
         } else {
