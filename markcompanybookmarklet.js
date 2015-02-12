@@ -50,7 +50,7 @@
 
 			source_url = window.location.href;
 			console.log('Source url = [' + source_url+ ']');
-
+			console.log('reviewer = ' + window.qudos_bookmarklet_email)
 			should_create = true;
 
 			if (should_create) {
