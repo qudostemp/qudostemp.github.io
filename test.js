@@ -54,18 +54,20 @@ $(document).ready(function() {
 	        }
 	        code = asBookmarklet(code, false, false);
 	        console.log(code);
-	        console.log($('<div>', {'class': 'result'}));
 	        $result = $('<div>', {'class': 'result', 
 	    						  'id': 'bookmarklet-section'}).append(
 	            $('<p>', {'html': '<em>Successfully generated bookmarklet!</em>&nbsp; for :' + email + '. Move this '}).append(
 	                $('<a/>', {
 	                    'class': 'bookmarklet',
 	                    href: code,
-	                    text: 'customized bookmarklet'
+	                    text: 'Mark company bookmarklet'
 	                })).append(' to the bookmarks bar')
 	        );
 
-	    	console.log($result)
+	    	console.log($result);
+	    	if ($(".result")) {
+	    		$(".result").remove();
+	    	}
 	    	$("#result-section").append($result);
 
         } else {
