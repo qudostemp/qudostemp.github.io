@@ -42,9 +42,10 @@
 			    console.log('Response : ' + result);
 			}
 
-			function getUrl(source_url, answer) {
+			function getUrl(source_url, answer, reviewer_email) {
 			    appId = 'AKfycbz6ysLKpqYMzLBPhKaHXqFmS4OSeuf1yXpgUUqjN_xMKWbM0VY';
-			    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&answer='+  answer +'&reviewer=Main';
+			    email_encoded = encodeURIComponent(reviewer_email);
+			    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&answer='+  answer +'&reviewer=' + email_encoded;
 			    return url;
 			}
 
@@ -56,7 +57,7 @@
 			if (should_create) {
 			    r = prompt('Enter your response for this company: ', null);
 			    if (r !== null) {
-			        url = getUrl(source_url, r);
+			        url = getUrl(source_url, r, window.qudos_bookmarklet_email);
 			        console.log('Submitting a request to google apps URL:' + url);
 			        /* $.get( url); */
 
