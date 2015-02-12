@@ -55,18 +55,19 @@ $(document).ready(function() {
 	        code = asBookmarklet(code, false, false);
 	        console.log(code);
 	        console.log($('<div>', {'class': 'result'}));
-	        $result = $('<div>', {'class': 'result'}).append(
-	            $('<p>', {'html': '<em>You did it!</em>&nbsp; You can run your bookmarklet by clicking: '}).append(
+	        $result = $('<div>', {'class': 'result', 
+	    						  'id': 'bookmarklet-section'}).append(
+	            $('<p>', {'html': '<em>Successfully generated bookmarklet!</em>&nbsp; for :' + email + '. Move this '}).append(
 	                $('<a/>', {
 	                    'class': 'bookmarklet',
 	                    href: code,
-	                    text: 'this link'
-	                })).append('<br><br>and here is the code:')
-	        ).append(
-	            $('<textarea>', {text: code})
+	                    text: 'customized bookmarklet'
+	                })).append(' to the bookmarks bar')
 	        );
 
-			$('#bk-link').attr("href", code)
+	    	console.log($result)
+	    	$("#result-section").append($result);
+
         } else {
         	alert('Email address is not valid :' + email)
         }
