@@ -68,7 +68,7 @@ $(document).ready(function() {
             addClientBookmarkletCode = asBookmarklet(addClientBookmarkletCode, false, false);
             console.log(addClientBookmarkletCode);
 
-            function createBookMarklet(email, bookmarkletCode, name){
+            function createBookMarkletJQueryElements(email, bookmarkletCode, name){
                 return $('<p>', {'html': '<em>Successfully generated bookmarklet!</em>&nbsp; for :' + email + '. Move this '}).append(
                     $('<a/>', {
                         'class': 'bookmarklet',
@@ -77,21 +77,10 @@ $(document).ready(function() {
                     })).append(' to the bookmarks bar');
             }
 
-            /* 
-	        $result = $('<div>', {'class': 'bookmarklets-section', 
-	    						  'id': 'bookmarklets'}).append(
-	            $('<p>', {'html': '<em>Successfully generated bookmarklet!</em>&nbsp; for :' + email + '. Move this '}).append(
-	                $('<a/>', {
-	                    'class': 'bookmarklet',
-	                    href: markCompanyBookmarkletCode,
-	                    text: 'Mark company bookmarklet'
-	                })).append(' to the bookmarks bar')
-	        ); */
-
             $result = $('<div>', {'class': 'bookmarklets-section', 
                                   'id': 'bookmarklets'})
-                                .append(createBookMarklet(email, markCompanyBookmarkletCode, 'Mark company bookmarklet'))
-                                .append(createBookMarklet(email, addClientBookmarkletCode, 'Add client bookmarklet'));
+                                .append(createBookMarkletJQueryElements(email, markCompanyBookmarkletCode, 'Mark company bookmarklet'))
+                                .append(createBookMarkletJQueryElements(email, addClientBookmarkletCode, 'Add client bookmarklet'));
 
 	    	console.log($result);
 	    	if ($(".bookmarklets-section")) {
