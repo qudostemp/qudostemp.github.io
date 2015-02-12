@@ -1,10 +1,5 @@
+$(document).ready(function() {
 
-(function() {
-
-    /*
-    //
-    // Code manipulators
-    //
     function minify(code) {
         // very simple minification (and not overly aggressive on whitespace)
         code = code.split(/\r\n|\r|\n/g);
@@ -35,70 +30,48 @@
         }
         return code.join('').replace(/;$/, '');
     }
-    
-    function asBookmarklet(code, jQueryPath, customPath) {
+
+    function asBookmarklet(code) {
         code = minify(code);
-
-        if (customPath) {
-            code = scriptLoader(code, customPath, false);
-        }
-
-        if (jQueryPath) {
-            code = scriptLoader(code, jQueryPath, true);
-        }
 
         code = '(function(){' + code + '})()';
         return 'javascript:' + encodeURIComponent(code);
     }
 
-    console.log('Adding a submit handler');
 
-      $("#btn").click( function()
-           {
-             alert('button clicked');
-           }
-        );
-
-    $( "#target").submit(function( event ) {
-          alert( "Handler for .submit() called." );
-          event.preventDefault();
-        });
-
-    */
-
-      $("#btn").click( function()
-           {
-             alert('button clicked');
-           }
-        );
-
-    /* $('#bk-form').submit(function(evt) {
+    //do jQuery stuff when DOM is ready
+    $('#bk-form').submit(function(evt) {
         console.log('Handling submit')
         evt.preventDefault();
         var email = $("#user-email").val();
-        var $code = "if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src='http://rajeevs.github.io/markcompanybookmarklet.js?'; window.__800_my_email=" + email + "}",
-            $wrap = $('#bk-results'),
-            jQueryPath = false,
-            customPath = false,
-            $result;
+        if (email){
+        	var code = "if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src='http://rajeevs.github.io/markcompanybookmarklet.js?';};" + "window.qudos_bookmarklet_email = '" + email + "';";
+        	console.log(code);
+        	var $result;
+	        if (!$.trim(code)) {
+	            alert('Error generating bookmarklet!');
+	            return;
+	        }
+	        code = asBookmarklet(code, false, false);
+	        console.log(code);
+	        $result = $('<div>', {'class': 'result', 
+	    						  'id': 'bookmarklet-section'}).append(
+	            $('<p>', {'html': '<em>Successfully generated bookmarklet!</em>&nbsp; for :' + email + '. Move this '}).append(
+	                $('<a/>', {
+	                    'class': 'bookmarklet',
+	                    href: code,
+	                    text: 'Mark company bookmarklet'
+	                })).append(' to the bookmarks bar')
+	        );
 
-        if (!$.trim(code)) {
-            alert('Please enter some code first, so I can hand craft it as a glorious bookmarklet!');
-            return;
+	    	console.log($result);
+	    	if ($(".result")) {
+	    		$(".result").remove();
+	    	}
+	    	$("#result-section").append($result);
+
+        } else {
+        	alert('Email address is not valid :' + email)
         }
-
-        code = asBookmarklet(code, false, false);
-
-        $result = $('<div>', {'class': 'result'}).append(
-            $('<p>', {'html': '<em>You did it!</em>&nbsp; You can run your bookmarklet by clicking: '}).append(
-                $('<a/>', {
-                    'class': 'bookmarklet',
-                    href: code,
-                    text: 'this link'
-                })).append('<br><br>and here is the code:')
-        ).append(
-            $('<textarea>', {text: code})
-        );
     });
-    */
-}); //.noConflict(true));
+});
