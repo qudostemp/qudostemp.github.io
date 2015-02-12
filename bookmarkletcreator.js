@@ -47,10 +47,10 @@ $(document).ready(function() {
         if (email){
             var email_code = "window.qudos_bookmarklet_email = '" + email + "';";
 
-        	var markCompanyBookmarkletCode = "if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src='http://rajeevs.github.io/markcompanybookmarklet.js?';};";
+        	var markCompanyBookmarkletCode = "if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src= window.location.protocol + '//rajeevs.github.io/markcompanybookmarklet.js?';};";
             markCompanyBookmarkletCode += email_code;
 
-            var addClientBookmarkletCode = "if(window.clientBookmarklet!==undefined){clientBookmarklet();}else{document.body.appendChild(document.createElement('script')).src='http://rajeevs.github.io/addclientbookmarklet.js?';};";
+            var addClientBookmarkletCode = "if(window.clientBookmarklet!==undefined){clientBookmarklet();}else{document.body.appendChild(document.createElement('script')).src= window.location.protocol + '//rajeevs.github.io/addclientbookmarklet.js?';};";
             addClientBookmarkletCode += email_code;
 
         	console.log(markCompanyBookmarkletCode);
