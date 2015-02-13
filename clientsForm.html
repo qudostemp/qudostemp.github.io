@@ -62,7 +62,7 @@
 
 				function getParameter(name, dict, _default) {
 					var val = dict[name];
-					if (typeof(val) == 'undefined') {
+					if (typeof(val) == 'undefined' || val == 'undefined') {
 						if (typeof(_default) !== 'undefined') { 
 							return _default ;
 						} else {
