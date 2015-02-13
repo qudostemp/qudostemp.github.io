@@ -76,6 +76,8 @@
 				queryDict = parseQueryStringToDict();
 				client_name = getParameter('client_name', queryDict);
 				num_clients = getParameter('num_clients', queryDict, 10);
+				source_url = getParameter('source_url', queryDict);
+				console.log('source_url=' + source_url);
 				addClientRows(client_name, num_clients);
 
 				$('#client-form').submit(function(event){ 

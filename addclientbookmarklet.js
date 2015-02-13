@@ -49,77 +49,16 @@
 			console.log('Selected client name = [' + client_name+ ']');
 			console.log('Source url = [' + source_url+ ']');
 
-			function getClientRow(client_name) {
-		        if(typeof(client_name)==='undefined') {
-		            client_name = null;
-		        }
-
-		        if (client_name == null) {
-		            client_name = '';
-		        }
-		        
-		        return [
-		                        '            <tr class="client">',
-		                        '                <td><input type="text" id ="client-name" value="' + client_name + '"/></td>',
-		                        '                <td><input type="text" id ="client-site" value=""/></td>',
-		                        '                <td><input type="text" id ="client-industry" value=""/></td>',
-		                        '            </tr>'
-		            ].join("\n");
-		    }
-    
-		    function getClientRows(num_rows) {
-		        var client_rows = [];
-		        for (var i = 0; i < num_rows; i++)
-		        {
-		            client_rows.push(getClientRow());
-		        }
-		        
-		        return client_rows.join("\n");
-		    }
-    
-		    function getClientsFormHtml(client_name, num_clients) {
-		        if(typeof(num_clients)==='undefined') {
-		            num_clients = 1;
-		        }
-
-		        var client_rows = [];
-		        
-		        if(client_name) {
-		            client_rows.push(getClientRow(client_name));
-		            client_rows.push(getClientRows(num_clients - 1));
-		        }
-		        else {
-		            client_rows.push(getClientRows(num_clients));
-		        }
-		        
-		        client_rows_html = client_rows.join("\n");
-		        return [      '<form id="client-form" action="">', 
-		                        '    <table>',
-		                        '        <thead>',
-		                        '            <tr>',
-		                        '                <th>Name</th>',
-		                        '                <th>Website</th>',
-		                        '                <th>Industry</th>',
-		                        '            </tr>',
-		                        '        </thead>',
-		                        '        <tbody class="clients">',
-		                        client_rows_html,
-		                        '        </tbody>',
-		                        '    </table>',
-		                        '    <button type="submit">Submit clients</button>',
-		                        '</form>'
-		                    ].join("\n");
-		    }
-
-			function iFrameStuff(client_name) {
+			function createIFrame(client_name, source_url) {
 				if ($("#wikiframe").length == 0) {
 					encoded_client_name = encodeURIComponent(client_name);
+					client_form_url = window.location.protocol +  "//rajeevs.github.io/clientsForm.html?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url);
 					$("body").append("\
 						<div id='wikiframe'>\
 							<div id='wikiframe_veil' style=''>\
 								<p></p>\
 							</div>\
-							<iframe src='" + window.location.protocol +  "//rajeevs.github.io/clientsForm.html?num_clients=10&client_name=" + encoded_client_name + "' onload=\"$('#wikiframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
+							<iframe src='" + client_form_url + "' onload=\"$('#wikiframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
 							<style type='text/css'>\
 								#wikiframe_veil { display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; background-color: rgba(255,255,255,.25); cursor: pointer; z-index: 900; }\
 								#wikiframe_veil p { color: black; font: normal normal bold 20px/20px Helvetica, sans-serif; position: absolute; top: 50%; left: 50%; width: 10em; margin: -10px auto 0 -5em; text-align: center; }\
@@ -143,8 +82,7 @@
 				});
 			}
 
-			iFrameStuff(client_name);
-
+			createIFrame(client_name);
 			should_create = false;
 
 			if (client_name != null && client_name != 'undefined' && client_name.length != 0) {
