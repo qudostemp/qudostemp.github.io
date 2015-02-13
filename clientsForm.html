@@ -73,11 +73,37 @@
 					}
 				}
 
+				function getUrl(source_url, client_name, reviewer) {
+				    appId = 'AKfycbxtiKPbnT61J6Az2uTPxOCqFxIhUqlwdyj_UQRWT0tvQbPVqjDA';
+				    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&client_name=' + client_name + '&reviewer=' + encodeURIComponent(reviewer);
+				    return url;
+				}
+
+				function submit_client(client_name, source_url) {
+				    console.log('Submitting Source_url :' + source_url + ' client+name ' + client_name);
+				    url = getUrl(source_url, client_name);
+				    console.log('Submitting a request to URL:' + url);
+				    $.ajax({
+				      type:'GET',
+				      url: url,
+				      data: null,
+				      dataType: "jsonp"
+				    })
+				    .done (function (data) {
+				       console.log("Call succeeded");
+				    })
+				    .fail (function ( jqXHR) {
+				       console.log("Call failed");
+			        });
+				}
+
 				queryDict = parseQueryStringToDict();
 				client_name = getParameter('client_name', queryDict);
 				num_clients = getParameter('num_clients', queryDict, 10);
 				source_url = getParameter('source_url', queryDict);
+				reviewer = getParameter('reviewer', queryDict);
 				console.log('source_url=' + source_url);
+				console.log('reviewer=' + reviewer);
 				addClientRows(client_name, num_clients);
 
 				$('#client-form').submit(function(event){ 

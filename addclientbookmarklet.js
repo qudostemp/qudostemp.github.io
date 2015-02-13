@@ -38,21 +38,16 @@
 			    return html;
 			}
 
-			function getUrl(source_url, client_name) {
-			    appId = 'AKfycbxtiKPbnT61J6Az2uTPxOCqFxIhUqlwdyj_UQRWT0tvQbPVqjDA';
-			    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&client_name=' + client_name + '&reviewer=' + encodeURIComponent('rajeev@qudos.com');
-			    return url;
-			}
-
 			source_url = window.location.href;
 			client_name = getSelectionHtml();
 			console.log('Selected client name = [' + client_name+ ']');
 			console.log('Source url = [' + source_url+ ']');
 
-			function createIFrame(client_name, source_url) {
+			function createIFrame(client_name, source_url, reviewer_email) {
 				if ($("#wikiframe").length == 0) {
 					encoded_client_name = encodeURIComponent(client_name);
-					client_form_url = window.location.protocol +  "//rajeevs.github.io/clientsForm.html?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url);
+					client_form_url = window.location.protocol +  "//rajeevs.github.io/clientsForm.html?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url)\
+										+ "&reviwer="+ reviewer_email;
 					$("body").append("\
 						<div id='wikiframe'>\
 							<div id='wikiframe_veil' style=''>\
@@ -82,54 +77,8 @@
 				});
 			}
 
-			createIFrame(client_name, source_url);
-			should_create = false;
-
-			if (client_name != null && client_name != 'undefined' && client_name.length != 0) {
-			    if (confirm('Are you sure you want to save this client: <' + client_name +'> to the spreadsheet?'))
-			    {
-			        should_create = true;
-			    }
-			    else {
-			         console.log('User chose not to add the client :' + client_name);
-			    }
-			}
-			else {
-			    var r = confirm("No client selected. Would you like to manually add a client?");
-			    if (r == true) {
-			       var user_input = prompt("Please enter client name", null);
-			       if (user_input != null) {
-			          console.log('User picked client_name :' + user_input );
-			          client_name = user_input;
-			          should_create = true;
-			      }  else {
-			          console.log('Client name was null');
-			      }
-			    }
-			    else { 
-			         console.log('User chose not to add a client explicitly');
-			    }
-			}
-
-			if (should_create) {
-			    console.log('Submitting Source_url :' + source_url + ' client+name ' + client_name);
-			    url = getUrl(source_url, client_name);
-			    console.log('Submitting a request to URL:' + url);
-			    $.ajax({
-			      type:'GET',
-			      url: url,
-			      data: null,
-			      dataType: "jsonp"
-			    })
-			    .done (function (data) {
-			       console.log("Call succeeded");
-			    })
-			    .fail (function ( jqXHR) {
-			       console.log("Call failed");
-			        });
-			}
-
-
+			console.log('Reviewer = ' + window.qudos_bookmarklet_email);
+			createIFrame(client_name, source_url, window.qudos_bookmarklet_email);
 		})();
 	}
 })();
