@@ -6,6 +6,56 @@
 	<script type='text/javascript' > 
 		$(document).ready(function() {
 				console.log('Code running');
+				function getClientRow(client_name) {
+			        if(typeof(client_name)==='undefined') {
+			            client_name = null;
+			        }
+
+			        if (client_name == null) {
+			            client_name = '';
+			        }
+			        
+			        return [
+		            '            <tr class="client">',
+		            '                <td><input type="text" id ="client-name" value="' + client_name + '"/></td>',
+		            '                <td><input type="text" id ="client-site" value=""/></td>',
+		            '                <td><input type="text" id ="client-industry" value=""/></td>',
+		            '            </tr>'
+				            ].join("\n");
+			    }
+    
+			    function getClientRows(num_rows) {
+			        var client_rows = [];
+			        for (var i = 0; i < num_rows; i++)
+			        {
+			            client_rows.push(getClientRow());
+			        }
+			        
+			        return client_rows.join("\n");
+			    }
+
+				function addClientRows(client_name, num_clients) {
+				    if(typeof(num_clients)==='undefined') {
+				        num_clients = 1;
+				    }
+
+				    var client_rows = [];
+				    
+				    if(client_name) {
+				        client_rows.push(getClientRow(client_name));
+				        client_rows.push(getClientRows(num_clients - 1));
+				    }
+				    else {
+				        client_rows.push(getClientRows(num_clients));
+				    }
+				    
+				    client_rows_html = client_rows.join("\n");
+
+					$('#client-form').append(client_rows_html);
+				}					    
+
+				addClientRows(null, 10);
+				
 				$('#client-form').submit(function(event){ 
 					console.log('Submit clients handler called'); 
 					event.preventDefault();
