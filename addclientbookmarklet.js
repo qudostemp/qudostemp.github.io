@@ -128,6 +128,9 @@
 							</style>\
 						</div>");
 					$("#wikiframe_veil").fadeIn(750);
+					$("#wikiframe #client-form").submit(function(event){
+							console.log("Submit clients handler called")
+						});
 				} else {
 					$("#wikiframe_veil").fadeOut(750);
 					$("#wikiframe iframe").slideUp(500);
