@@ -73,9 +73,9 @@
 					}
 				}
 
-				function getUrl(source_url, client_name, reviewer) {
+				function getUrl(source_url, client_name, reviewer, website, industry) {
 				    appId = 'AKfycbxtiKPbnT61J6Az2uTPxOCqFxIhUqlwdyj_UQRWT0tvQbPVqjDA';
-				    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&client_name=' + encodeURIComponent(client_name) + '&reviewer=' + encodeURIComponent(reviewer);
+				    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&client_name=' + encodeURIComponent(client_name) + 				    	'&reviewer=' + encodeURIComponent(reviewer) + 				    	'&website=' + encodeURIComponent(website) + 				    	'&industry=' + encodeURIComponent(industry);
 				    return url;
 				}
 
@@ -90,9 +90,9 @@
 			    	$(".status-messages").val("");
 				}
 
-				function submit_client(client_name, source_url, reviewer) {
+				function submit_client(client_name, source_url, reviewer, website, industry) {
 				    console.log('Submitting Source_url :' + source_url + ' client+name ' + client_name + ' reviewer :' + reviewer);
-				    url = getUrl(source_url, client_name, reviewer);
+				    url = getUrl(source_url, client_name, reviewer, website, industry);
 				    console.log('Submitting a request to URL:' + url);
 
 				    $.ajax({
@@ -129,7 +129,7 @@
 					clients_data = clients.map(function(index, elem) {
 						return {
 							name: $("#client-name", elem).val(),
-							site: $("#client-site", elem).val(),
+							website: $("#client-site", elem).val(),
 							industry: $("#client-industry", elem).val(),
 						}
 					});
@@ -142,7 +142,7 @@
 
 					function submit_response(index, client, array) {
 					  console.log('Submitting a response for : ' + client);
-					  submit_client(client.name, source_url, reviewer);
+					  submit_client(client.name, source_url, reviewer, client.website, client.industry);
 					}
 
 					clearStatus();
@@ -180,6 +180,7 @@
 		</form>
 	</div>
 	<div class="status-section" style="width: 80%">
+		<p>Submission Status </p>
 		<textarea class="status-messages" rows="4" cols="50">
 		</textarea>	
 	</div>
