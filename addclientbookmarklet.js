@@ -128,10 +128,16 @@
 							</style>\
 						</div>");
 				} else {
-				$("#wikiframe_veil").fadeOut(750);
-				$("#wikiframe iframe").slideUp(500);
-				setTimeout("$('#wikiframe').remove()", 750);
+					$("#wikiframe_veil").fadeOut(750);
+					$("#wikiframe iframe").slideUp(500);
+					setTimeout("$('#wikiframe').remove()", 750);
 				}
+
+				$("#wikiframe_veil").click(function(event){
+					$("#wikiframe_veil").fadeOut(750);
+					$("#wikiframe iframe").slideUp(500);
+					setTimeout("$('#wikiframe').remove()", 750);
+				});
 			}
 
 			iFrameStuff(client_name);
