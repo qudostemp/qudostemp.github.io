@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Client submission form</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type='text/javascript' > 
+		$(document).ready(function() {
+				console.log('Code running');
+				$('#client-form').submit(function(event){ 
+					console.log('Submit clients handler called'); 
+			});
+		});
+	</script>
+
+</head>
+
+<body>
+	<div>
+	<form id="client-form" action="">
+		<table>
+	        <thead>
+	            <tr>
+	                <th>Name</th>
+	                <th>Website</th>
+	                <th>Industry</th>
+	            </tr>
+	        </thead>
+	        <tbody class="clients">
+	        </tbody>
+	    </table>
+	    <button type="submit">Submit clients</button>
+	</form>
+	</div>
+</body>
