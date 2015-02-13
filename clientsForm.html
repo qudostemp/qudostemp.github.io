@@ -54,7 +54,30 @@
 					$('#clients-form-body').append(client_rows_html);
 				}					    
 
-				addClientRows(null, 10);
+				function parseQueryStringToDict(){
+					var qd = {};
+					location.search.substr(1).split("&").forEach(function(item) {var k = item.split("=")[0], v = decodeURIComponent(item.split("=")[1]); qd[k] = v});
+					return qd;
+				}
+
+				function getParameter(name, dict, _default) {
+					var val = dict[name];
+					if (typeof(val) == 'undefined') {
+						if (typeof(_default) !== 'undefined') { 
+							return _default ;
+						} else {
+							return null;
+						}
+					}
+					else {
+						return val;
+					}
+				}
+
+				queryDict = parseQueryStringToDict();
+				client_name = getParameter('client_name', queryDict);
+				num_clients = getParameter('num_clients', queryDict, 10);
+				addClientRows(client_name, num_clients);
 
 				$('#client-form').submit(function(event){ 
 					console.log('Submit clients handler called'); 
