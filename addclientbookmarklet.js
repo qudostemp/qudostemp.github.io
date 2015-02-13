@@ -120,6 +120,14 @@
 							<div id='wikiframe_veil' style=''>\
 								<p>Loading...</p>\
 							</div>\
+							<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>\
+							<script type='text/javascript' > \
+								$(document).ready(function() { \
+										$('#client-form').submit(function(event){ \
+										console.log('Submit clients handler called'); \
+									}); \
+								});\
+							</script> \
 							<iframe src='" + "data:text/html;charset=utf-8," + encodeURI(form_html) + "' onload=\"$('#wikiframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
 							<style type='text/css'>\
 								#wikiframe_veil { display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; background-color: rgba(255,255,255,.25); cursor: pointer; z-index: 900; }\
