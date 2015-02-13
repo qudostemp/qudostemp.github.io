@@ -127,6 +127,7 @@
 								#wikiframe iframe { display: none; position: fixed; top: 10%; right: 2%; width: 400px; height: 60%; z-index: 999; border: 10px solid rgba(0,0,0,.5); margin: -5px 0 0 -5px; }\
 							</style>\
 						</div>");
+					$("#wikiframe_veil").fadeIn(750);
 				} else {
 					$("#wikiframe_veil").fadeOut(750);
 					$("#wikiframe iframe").slideUp(500);
