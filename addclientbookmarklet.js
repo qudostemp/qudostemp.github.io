@@ -46,8 +46,7 @@
 			function createIFrame(client_name, source_url, reviewer_email) {
 				if ($("#wikiframe").length == 0) {
 					encoded_client_name = encodeURIComponent(client_name);
-					client_form_url = window.location.protocol +  "//rajeevs.github.io/clientsForm.html?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url)\
-										+ "&reviwer="+ reviewer_email;
+					client_form_url = window.location.protocol +  "//rajeevs.github.io/clientsForm.html?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url) + "&reviewer=" + reviewer_email;
 					$("body").append("\
 						<div id='wikiframe'>\
 							<div id='wikiframe_veil' style=''>\
