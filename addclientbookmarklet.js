@@ -49,9 +49,6 @@
 					client_form_url = window.location.protocol +  "//rajeevs.github.io/clientsForm.html?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url) + "&reviewer=" + reviewer_email;
 					$("body").append("\
 						<div id='wikiframe'>\
-							<div id='wikiframe_veil' style=''>\
-								<p></p>\
-							</div>\
 							<iframe src='" + client_form_url + "' onload=\"$('#wikiframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
 							<style type='text/css'>\
 								#wikiframe_veil { display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; background-color: rgba(255,255,255,.25); cursor: pointer; z-index: 900; }\
@@ -59,21 +56,10 @@
 								#wikiframe iframe { display: none; position: fixed; top: 10%; right: 2%; width: 400px; height: 60%; z-index: 999; border: 10px solid rgba(0,0,0,.5); margin: -5px 0 0 -5px; }\
 							</style>\
 						</div>");
-					$("#wikiframe_veil").fadeIn(750);
-					$("#wikiframe #client-form").submit(function(event){
-							console.log("Submit clients handler called")
-						});
 				} else {
-					$("#wikiframe_veil").fadeOut(750);
 					$("#wikiframe iframe").slideUp(500);
 					setTimeout("$('#wikiframe').remove()", 750);
 				}
-
-				$("#wikiframe_veil").click(function(event){
-					$("#wikiframe_veil").fadeOut(750);
-					$("#wikiframe iframe").slideUp(500);
-					setTimeout("$('#wikiframe').remove()", 750);
-				});
 			}
 
 			console.log('Reviewer = ' + window.qudos_bookmarklet_email);
