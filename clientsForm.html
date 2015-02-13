@@ -75,14 +75,26 @@
 
 				function getUrl(source_url, client_name, reviewer) {
 				    appId = 'AKfycbxtiKPbnT61J6Az2uTPxOCqFxIhUqlwdyj_UQRWT0tvQbPVqjDA';
-				    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&client_name=' + client_name + '&reviewer=' + encodeURIComponent(reviewer);
+				    url = 'https://script.google.com/macros/s/' + appId +  '/exec?url=' + source_url + '&client_name=' + encodeURIComponent(client_name) + '&reviewer=' + encodeURIComponent(reviewer);
 				    return url;
 				}
 
-				function submit_client(client_name, source_url) {
-				    console.log('Submitting Source_url :' + source_url + ' client+name ' + client_name);
-				    url = getUrl(source_url, client_name);
+				function appendStatus(msg) {
+			    	current = $(".status-messages").val();
+			    	current = current + "\n";
+			    	new_text = current + msg;  
+			    	$(".status-messages").val(new_text);
+				}
+
+				function clearStatus(msg) {
+			    	$(".status-messages").val("");
+				}
+
+				function submit_client(client_name, source_url, reviewer) {
+				    console.log('Submitting Source_url :' + source_url + ' client+name ' + client_name + ' reviewer :' + reviewer);
+				    url = getUrl(source_url, client_name, reviewer);
 				    console.log('Submitting a request to URL:' + url);
+
 				    $.ajax({
 				      type:'GET',
 				      url: url,
@@ -91,23 +103,50 @@
 				    })
 				    .done (function (data) {
 				       console.log("Call succeeded");
+				       appendStatus('Saved ' + client_name + ' successfully');
 				    })
 				    .fail (function ( jqXHR) {
 				       console.log("Call failed");
+				       appendStatus('Error saving ' + client_name);
 			        });
 				}
 
 				queryDict = parseQueryStringToDict();
+				// PARAMETERS 
 				client_name = getParameter('client_name', queryDict);
 				num_clients = getParameter('num_clients', queryDict, 10);
 				source_url = getParameter('source_url', queryDict);
 				reviewer = getParameter('reviewer', queryDict);
+
 				console.log('source_url=' + source_url);
 				console.log('reviewer=' + reviewer);
+				// ADD ROWS
 				addClientRows(client_name, num_clients);
 
 				$('#client-form').submit(function(event){ 
 					console.log('Submit clients handler called'); 
+					clients = $(".client");
+					clients_data = clients.map(function(index, elem) {
+						return {
+							name: $("#client-name", elem).val(),
+							site: $("#client-site", elem).val(),
+							industry: $("#client-industry", elem).val(),
+						}
+					});
+
+					valid_clients = clients_data.filter(function(index, client){
+						return typeof(client.name) !== 'undefined' && client.name != null && client.name != '';
+					});
+
+					console.log("Found "+ valid_clients.length + " clients");
+
+					function submit_response(index, client, array) {
+					  console.log('Submitting a response for : ' + client);
+					  submit_client(client.name, source_url, reviewer);
+					}
+
+					clearStatus();
+					valid_clients.each(submit_response);
 					event.preventDefault();
 			});
 		});
@@ -124,20 +163,24 @@
 </head>
 
 <body>
-	<div>
-	<form id="client-form" action="">
-		<table>
-	        <thead>
-	            <tr>
-	                <th>Name</th>
-	                <th>Website</th>
-	                <th>Industry</th>
-	            </tr>
-	        </thead>
-	        <tbody id="clients-form-body">
-	        </tbody>
-	    </table>
-	    <button type="submit">Submit clients</button>
-	</form>
+	<div class="input-area">
+		<form id="client-form" action="">
+			<table>
+		        <thead>
+		            <tr>
+		                <th>Name</th>
+		                <th>Website</th>
+		                <th>Industry</th>
+		            </tr>
+		        </thead>
+		        <tbody id="clients-form-body">
+		        </tbody>
+		    </table>
+		    <button type="submit">Submit clients</button>
+		</form>
+	</div>
+	<div class="status-section" style="width: 80%">
+		<textarea class="status-messages" rows="4" cols="50">
+		</textarea>	
 	</div>
 </body>
