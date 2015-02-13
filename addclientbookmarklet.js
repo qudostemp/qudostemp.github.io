@@ -118,18 +118,9 @@
 					$("body").append("\
 						<div id='wikiframe'>\
 							<div id='wikiframe_veil' style=''>\
-								<p>Loading...</p>\
+								<p></p>\
 							</div>\
-							<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>\
-							<script type='text/javascript' > \
-								$(document).ready(function() { \
-										console.log('Code running');	\
-										$('#client-form').submit(function(event){ \
-										console.log('Submit clients handler called'); \
-									}); \
-								});\
-							</script> \
-							<iframe src='" + "data:text/html;charset=utf-8," + encodeURI(form_html) + "' onload=\"$('#wikiframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
+							<iframe src='" + window.location.protocol +  "//rajeevs.github.io/clientsForm.html?num_clients=10&client_name=XYZ' onload=\"$('#wikiframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
 							<style type='text/css'>\
 								#wikiframe_veil { display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; background-color: rgba(255,255,255,.25); cursor: pointer; z-index: 900; }\
 								#wikiframe_veil p { color: black; font: normal normal bold 20px/20px Helvetica, sans-serif; position: absolute; top: 50%; left: 50%; width: 10em; margin: -10px auto 0 -5em; text-align: center; }\
