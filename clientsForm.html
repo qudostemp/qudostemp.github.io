@@ -8,6 +8,7 @@
 				console.log('Code running');
 				$('#client-form').submit(function(event){ 
 					console.log('Submit clients handler called'); 
+					event.preventDefault();
 			});
 		});
 	</script>
