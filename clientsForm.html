@@ -51,11 +51,11 @@
 				    
 				    client_rows_html = client_rows.join("\n");
 
-					$('#client-form').append(client_rows_html);
+					$('#clients-form-body').append(client_rows_html);
 				}					    
 
 				addClientRows(null, 10);
-				
+
 				$('#client-form').submit(function(event){ 
 					console.log('Submit clients handler called'); 
 					event.preventDefault();
@@ -76,7 +76,7 @@
 	                <th>Industry</th>
 	            </tr>
 	        </thead>
-	        <tbody class="clients">
+	        <tbody id="clients-form-body">
 	        </tbody>
 	    </table>
 	    <button type="submit">Submit clients</button>
