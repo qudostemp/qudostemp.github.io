@@ -77,7 +77,7 @@
 		        return client_rows.join("\n");
 		    }
     
-		    function getClientsForm(client_name, num_clients) {
+		    function getClientsFormHtml(client_name, num_clients) {
 		        if(typeof(num_clients)==='undefined') {
 		            num_clients = 1;
 		        }
@@ -93,7 +93,7 @@
 		        }
 		        
 		        client_rows_html = client_rows.join("\n");
-		        return $([      '<form id="client-form" action="">', 
+		        return [      '<form id="client-form" action="">', 
 		                        '    <table>',
 		                        '        <thead>',
 		                        '            <tr>',
@@ -108,11 +108,11 @@
 		                        '    </table>',
 		                        '    <button type="submit">Submit clients</button>',
 		                        '</form>'
-		                    ].join("\n"));
+		                    ].join("\n");
 		    }
 
 			function iFrameStuff(client_name) {
-				form_html = getClientsForm(client_name, 5);
+				form_html = getClientsFormHtml(client_name, 5);
 				console.log(form_html);
 				$("body").append("\
 					<div id='wikiframe'>\
