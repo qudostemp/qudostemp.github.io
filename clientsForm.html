@@ -43,7 +43,6 @@
 				    
 				    if(client_name) {
 				        client_rows.push(getClientRow(client_name));
-				        client_rows.push(getClientRows(num_clients - 1));
 				    }
 				    else {
 				        client_rows.push(getClientRows(num_clients));
@@ -85,7 +84,15 @@
 			});
 		});
 	</script>
-
+	<style type="text/css">
+		body {
+			background: #eee;
+			margin: 0;
+			padding: 0;
+			font: 18px/24px Georgia, Serif;
+			color: #555;
+		}
+	</style>
 </head>
 
 <body>
