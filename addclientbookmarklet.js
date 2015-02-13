@@ -112,20 +112,26 @@
 		    }
 
 			function iFrameStuff(client_name) {
-				form_html = getClientsFormHtml(client_name, 5);
-				console.log(form_html);
-				$("body").append("\
-					<div id='wikiframe'>\
-						<div id='wikiframe_veil' style=''>\
-							<p>Loading...</p>\
-						</div>\
-						<iframe src='" + "data:text/html;charset=utf-8," + encodeURI(form_html) + "' onload=\"$('#wikiframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
-						<style type='text/css'>\
-							#wikiframe_veil { display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; background-color: rgba(255,255,255,.25); cursor: pointer; z-index: 900; }\
-							#wikiframe_veil p { color: black; font: normal normal bold 20px/20px Helvetica, sans-serif; position: absolute; top: 50%; left: 50%; width: 10em; margin: -10px auto 0 -5em; text-align: center; }\
-							#wikiframe iframe { display: none; position: fixed; top: 10%; right: 2%; width: 400px; height: 60%; z-index: 999; border: 10px solid rgba(0,0,0,.5); margin: -5px 0 0 -5px; }\
-						</style>\
-					</div>");			
+				if ($("#wikiframe").length == 0) {
+					form_html = getClientsFormHtml(client_name, 5);
+					console.log(form_html);
+					$("body").append("\
+						<div id='wikiframe'>\
+							<div id='wikiframe_veil' style=''>\
+								<p>Loading...</p>\
+							</div>\
+							<iframe src='" + "data:text/html;charset=utf-8," + encodeURI(form_html) + "' onload=\"$('#wikiframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
+							<style type='text/css'>\
+								#wikiframe_veil { display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; background-color: rgba(255,255,255,.25); cursor: pointer; z-index: 900; }\
+								#wikiframe_veil p { color: black; font: normal normal bold 20px/20px Helvetica, sans-serif; position: absolute; top: 50%; left: 50%; width: 10em; margin: -10px auto 0 -5em; text-align: center; }\
+								#wikiframe iframe { display: none; position: fixed; top: 10%; right: 2%; width: 400px; height: 60%; z-index: 999; border: 10px solid rgba(0,0,0,.5); margin: -5px 0 0 -5px; }\
+							</style>\
+						</div>");
+				} else {
+				$("#wikiframe_veil").fadeOut(750);
+				$("#wikiframe iframe").slideUp(500);
+				setTimeout("$('#wikiframe').remove()", 750);
+				}
 			}
 
 			iFrameStuff(client_name);
