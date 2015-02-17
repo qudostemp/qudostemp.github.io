@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Client submission form</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type='text/javascript' > 
+		$(document).ready(function() {
+				console.log('Code running');
+				function getClientRow(client_name) {
+			        if(typeof(client_name)==='undefined') {
+			            client_name = null;
+			        }
+
+			        if (client_name == null) {
+			            client_name = '';
+			        }
+			        
+			        return [
+		            '            <tr class="client">',
+		            '                <td><input type="text" id ="client-name" value="' + client_name + '"/></td>',
+		            '                <td><input type="text" id ="client-site" value=""/></td>',
+		            '                <td><input type="text" id ="client-industry" value=""/></td>',
+		            '            </tr>'
+				            ].join("\n");
+			    }
+    
+			    function getClientRows(num_rows) {
+			        var client_rows = [];
+			        for (var i = 0; i < num_rows; i++)
+			        {
+			            client_rows.push(getClientRow());
+			        }
+			        
+			        return client_rows.join("\n");
+			    }
+
+				function addClientRows(client_name, num_clients) {
+				    if(typeof(num_clients)==='undefined') {
+				        num_clients = 1;
+				    }
+
+				    var client_rows = [];
+				    
+				    if(client_name) {
+				        client_rows.push(getClientRow(client_name));
+				    }
+				    else {
+				        client_rows.push(getClientRows(num_clients));
+				    }
+				    
+				    client_rows_html = client_rows.join("\n");
+
+					$('#clients-form-body').append(client_rows_html);
+				}					    
+
+				function parseQueryStringToDict(){
+					var qd = {};
+					location.search.substr(1).split("&").forEach(function(item) {var k = item.split("=")[0], v = decodeURIComponent(item.split("=")[1]); qd[k] = v});
+					return qd;
+				}
+
+				function getParameter(name, dict, _default) {
+					var val = dict[name];
+					if (typeof(val) == 'undefined' || val == 'undefined') {
+						if (typeof(_default) !== 'undefined') { 
+							return _default ;
+						} else {
+							return null;
+						}
+					}
+					else {
+						return val;
+					}
+				}
+
+				function getBaseUrl() {
+					return 'https://frozen-taiga-8902.herokuapp.com/proxySubmit'; 
+					// heroku proxy URL to get around X-domain issues
+				}
+
+				function appendStatus(msg) {
+			    	current = $(".status-messages").val();
+			    	current = current + "\n";
+			    	new_text = current + msg;  
+			    	$(".status-messages").val(new_text);
+				}
+
+				function clearStatus(msg) {
+			    	$(".status-messages").val("");
+				}
+
+				function submit_batch(sheet_name, source_url, reviewer, clients_info) {
+					if (clients_info == null) {
+				       appendStatus('No clients submitted');
+				       return;
+					}
+
+				    url = getBaseUrl();
+				    console.log('Source_url :' + source_url + ' for reviewer :' + reviewer + ' submitting a request to :' + url);
+				    
+				    // Doing this because the original clients info is a JQuery selector list and cannot be JSON stringified easily
+				    var payload_clients_info = new Array();
+					for (var i =0 ; i < clients_info.length; i++ ) { 
+						payload_clients_info[i] = clients_info[i]; 
+					}
+
+					// AJAX payload
+				    var payLoad = {
+				    	sourceUrl: source_url,
+				    	sheetName : sheet_name,
+				    	reviewer: reviewer,
+				    	clients: payload_clients_info
+				    };
+
+				    console.log(payLoad);
+
+				    $.ajax({
+				      type:'POST',
+				      url: url,
+				      data: JSON.stringify(payLoad),
+				      dataType: "json",
+				      contentType: "application/json; charset=UTF-8"
+				    })
+				    .done (function (data) {
+				    	if( data && data.numClients !== undefined && data.numClients == clients_info.length) {
+					       console.log("Call succeeded. Received data: " + data);
+					       appendStatus('Saved ' + clients_info.length + ' clients  successfully');
+				   		} else {
+					       console.log("Call failed");
+					       var numClientsSaved = 0;
+
+							if (data && data.numClients !== undefined) {
+								numClientsSaved = data.numClients;
+							}
+
+							appendStatus('Error saving clients: Only ' + data.numClients + ' out of ' + clients_info.length + ' Saved');
+				   		}
+				    })
+				    .fail (function ( jqXHR, textStatus, errorThrown) {
+				       console.log("Call failed");
+				       appendStatus('Error saving clients. Not all clients may be in the sheet');
+			        });
+				}
+
+				queryDict = parseQueryStringToDict();
+				// PARAMETERS 
+				client_name = getParameter('client_name', queryDict);
+				num_clients = getParameter('num_clients', queryDict, 10);
+				source_url = getParameter('source_url', queryDict);
+				reviewer = getParameter('reviewer', queryDict);
+				sheet_name = getParameter('sheet_name', queryDict);
+
+				console.log('source_url =' + source_url);
+				console.log('reviewer =' + reviewer);
+				console.log('sheet_name =' + sheet_name);
+
+				$('#sheet-name').text(sheet_name);
+
+				// ADD ROWS
+				addClientRows(client_name, num_clients);
+				clearStatus();
+
+				$('#client-form').submit(function(event){ 
+					event.preventDefault();
+					console.log('Submit clients handler called'); 
+					clients = $(".client");
+					clients_data = clients.map(function(index, elem) {
+						return {
+							name: $("#client-name", elem).val(),
+							website: $("#client-site", elem).val(),
+							industry: $("#client-industry", elem).val(),
+						}
+					});
+
+					valid_clients = clients_data.filter(function(index, client){
+						return typeof(client.name) !== 'undefined' && client.name != null && client.name != '';
+					});
+
+					console.log("Found "+ valid_clients.length + " clients");
+
+					clearStatus();
+					appendStatus('Sumitting (' + valid_clients.length + ') clients');
+					submit_batch(sheet_name, source_url, reviewer,valid_clients);
+			});
+		});
+	</script>
+	<style type="text/css">
+		body {
+			background: #eee;
+			margin: 0;
+			padding: 0;
+			font: 18px/24px Georgia, Serif;
+			color: #555;
+		}
+
+		#sheet-name {
+			font-style: italic;
+			color: blue;
+		}
+	</style>
+</head>
+
+<body>
+	<p> Sheet Name :
+		<span id="sheet-name"></span>
+	</p>
+	<div class="input-area">
+		<form id="client-form" action="">
+			<table>
+		        <thead>
+		            <tr>
+		                <th>Name</th>
+		                <th>Website</th>
+		                <th>Industry</th>
+		            </tr>
+		        </thead>
+		        <tbody id="clients-form-body">
+		        </tbody>
+		    </table>
+		    <button type="submit">Submit clients</button>
+		</form>
+	</div>
+	<div class="status-section" style="width: 80%">
+		<p>Submission Status </p>
+		<textarea class="status-messages" rows="4" cols="50">
+		</textarea>	
+	</div>
+</body>
