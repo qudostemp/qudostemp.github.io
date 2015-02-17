@@ -44,14 +44,19 @@ $(document).ready(function() {
         console.log('Handling submit')
         evt.preventDefault();
         var email = $("#user-email").val();
-        if (email){
+        var sheetName = $("#sheet-name").val();
+
+        if (email && sheetName){
             var email_code = "window.qudos_bookmarklet_email = '" + email + "';";
+            var sheet_name_code = "window.qudos_bookmarklet_sheetName = '" + sheetName + "';";
 
         	var markCompanyBookmarkletCode = "if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src= window.location.protocol + '//rajeevs.github.io/markcompanybookmarklet.js?';};";
             markCompanyBookmarkletCode += email_code;
+            markCompanyBookmarkletCode += sheet_name_code;
 
             var addClientBookmarkletCode = "if(window.clientBookmarklet!==undefined){clientBookmarklet();}else{document.body.appendChild(document.createElement('script')).src= window.location.protocol + '//rajeevs.github.io/addclientbookmarklet.js?';};";
             addClientBookmarkletCode += email_code;
+            addClientBookmarkletCode += sheet_name_code;
 
         	console.log(markCompanyBookmarkletCode);
             console.log(addClientBookmarkletCode);
@@ -79,8 +84,8 @@ $(document).ready(function() {
 
             $result = $('<div>', {'class': 'bookmarklets-section', 
                                   'id': 'bookmarklets'})
-                                .append(createBookMarkletJQueryElements(email, markCompanyBookmarkletCode, 'Mark company bookmarklet'))
-                                .append(createBookMarkletJQueryElements(email, addClientBookmarkletCode, 'Add client bookmarklet'));
+                                .append(createBookMarkletJQueryElements(email, markCompanyBookmarkletCode, 'Mark company bookmarklet'+ '(' + sheetName + ')'))
+                                .append(createBookMarkletJQueryElements(email, addClientBookmarkletCode, 'Add client bookmarklet' + '(' + sheetName + ')'));
 
 	    	console.log($result);
 	    	if ($(".bookmarklets-section")) {
@@ -90,7 +95,13 @@ $(document).ready(function() {
 	    	$("#result-section").append($result);
 
         } else {
-        	alert('Email address is not valid :' + email)
+            if(!email) {
+        	   alert('Email address is not valid :' + email);
+            } else {
+                if (!sheetName) {
+                   alert('SheetName is not valid :' + sheetName);
+               }
+            }
         }
     });
 });
