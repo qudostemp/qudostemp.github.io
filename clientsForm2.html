@@ -89,6 +89,13 @@
 			    	$(".status-messages").val("");
 				}
 
+				function enableSubmitBtn() {
+					$('.submit-clients-btn').attr("disabled", false);
+				}
+				function disableSubmitBtn() {
+					$('.submit-clients-btn').attr("disabled", true);
+				}
+
 				function submit_batch(sheet_name, source_url, reviewer, clients_info) {
 					if (clients_info == null) {
 				       appendStatus('No clients submitted');
@@ -139,6 +146,9 @@
 				    .fail (function ( jqXHR, textStatus, errorThrown) {
 				       console.log("Call failed");
 				       appendStatus('Error saving clients. Not all clients may be in the sheet');
+			        })
+			        .always(function(){
+						enableSubmitBtn();
 			        });
 				}
 
@@ -162,6 +172,7 @@
 
 				$('#client-form').submit(function(event){ 
 					event.preventDefault();
+					disableSubmitBtn();
 					console.log('Submit clients handler called'); 
 					clients = $(".client");
 					clients_data = clients.map(function(index, elem) {
@@ -217,7 +228,7 @@
 		        <tbody id="clients-form-body">
 		        </tbody>
 		    </table>
-		    <button type="submit">Submit clients</button>
+		    <button type="submit" class="submit-clients-btn">Submit clients</button>
 		</form>
 	</div>
 	<div class="status-section" style="width: 80%">
