@@ -192,7 +192,17 @@
 					clearStatus();
 					appendStatus('Sumitting (' + valid_clients.length + ') clients');
 					submit_batch(sheet_name, source_url, reviewer,valid_clients);
-			});
+				});
+
+				$('#clear-clients-btn').click(function(event){ 
+					clients = $(".client");
+
+					clients.each(function (index, elem, array) {
+						$("#client-name", elem).val('');
+						$("#client-site", elem).val('');
+						$("#client-industry", elem).val('');
+					});
+				});
 		});
 	</script>
 	<style type="text/css">
@@ -230,6 +240,15 @@
 		    </table>
 		    <button type="submit" class="submit-clients-btn">Submit clients</button>
 		</form>
+		<table>
+			<tbody>
+				<tr>
+					<td>		    
+						<button id="clear-clients-btn">Clear All</button>
+					</td>
+				</tr>
+			</tbody>
+		<table>
 	</div>
 	<div class="status-section" style="width: 80%">
 		<p>Submission Status </p>
