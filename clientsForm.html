@@ -146,6 +146,7 @@
 					}
 
 					clearStatus();
+					appendStatus('Sumitting (' + valid_clients.length + ') clients');
 					valid_clients.each(submit_response);
 					event.preventDefault();
 			});

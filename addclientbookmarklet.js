@@ -43,10 +43,10 @@
 			console.log('Selected client name = [' + client_name+ ']');
 			console.log('Source url = [' + source_url+ ']');
 
-			function createIFrame(client_name, source_url, reviewer_email) {
+			function createIFrame(client_name, source_url, reviewer_email, sheetName) {
 				if ($("#wikiframe").length == 0) {
 					encoded_client_name = encodeURIComponent(client_name);
-					client_form_url = window.location.protocol +  "//rajeevs.github.io/clientsForm.html?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url) + "&reviewer=" + reviewer_email;
+					client_form_url = window.location.protocol +  "//rajeevs.github.io/clientsForm2.html?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url) + "&reviewer=" + reviewer_email + "&sheet_name=" + encodeURIComponent(sheetName);
 					$("body").append("\
 						<div id='wikiframe'>\
 							<iframe src='" + client_form_url + "' onload=\"$('#wikiframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
@@ -61,7 +61,7 @@
 			}
 
 			console.log('Reviewer = ' + window.qudos_bookmarklet_email);
-			createIFrame(client_name, source_url, window.qudos_bookmarklet_email);
+			createIFrame(client_name, source_url, window.qudos_bookmarklet_email, window.qudos_bookmarklet_sheetName);
 		})();
 	}
 })();

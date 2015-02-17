@@ -29,6 +29,10 @@
 			color: black;
 		}
 		
+		.user-input {
+			width: 40%;
+		}
+		
 		.bookmarklet {
 			font-family: Verdana, sans;
 			background: #ddd;
@@ -49,7 +53,11 @@
 	
 		<form id="bk-form" action="index.html">
 			Email<br>
-			<input type="text" id ="user-email" value="">
+			<input type="text" id ="user-email" class="user-input" value=""> 
+			<br>
+			Sheet Name (refer to instructions) <br>
+			<input type="text" id ="sheet-name" class="user-input" value="">
+			<br> <br>
 			<button type="submit">Generate bookmarklets</button>
 		</form>
 
