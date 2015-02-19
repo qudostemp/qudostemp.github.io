@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Client extractor form</title>
+	<script type="text/javascript" src="utils.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/easyXDM.debug.js"></script>
+	<script type="text/javascript" src="json2.js"></script>
+	<script type='text/javascript' > 
+		$(document).ready(function() {
+			console.log($('#iframe-area iframe'));
+			$('#iframe-area iframe').load(function(){
+				alert('Loaded');
+				$('#iframe-area iframe').slideDown(500);
+			});
+
+			function createIFrame() {
+			    var rpc = new easyXDM.Rpc({
+			    	local: window.location.origin + "/easyxdm_source.html",
+			        remote: window.location.origin + '/easyxdm_child.html', // the path to the provider
+			        container: document.getElementById("iframe-area"),
+			        props: {
+			            style: {
+			            	/*
+			            	display: "none",
+			            	top : "100px",
+			                border: "1px solid red",
+			                width: "100px",
+			                height: "200px"
+							*/
+			                position: "fixed",
+			                top: "10%",
+			                right: "2%",
+			                width: "400px", 
+			                height: "80%",
+			                zindex: "999",
+			                border: "10px solid rgba(0,0,0,.5)",
+			                margin: "-5px 0 0 -5px"
+			            }
+	        		}
+			    }, 
+			    {
+			        local: {
+			            getParentHtml: function(successFn, errorFn){
+			                // here we expose a simple method with no arguments
+			                // if we want to return a response, we can use `return ....`,
+			                // or we can use the provided callbacks if the operation is async
+			                // or an error occurred
+			                html = window.qudos_getSelectionHtml();
+			                console.log('getParentHtml called');
+			                return html;
+			            }
+			        }
+			    });
+			}
+
+			createIFrame();
+			
+			/*
+		    rpc.helloWorld(1,2,3, function(response){
+		        // here we can do something with the return value from `helloWorld`
+		    }, function(errorObj){
+		        // here we can react to a possible error
+		    }); */
+		});
+	</script>
+	<style type="text/css">
+		body {
+			background: #eee;
+			margin: 0;
+			padding: 0;
+			font: 18px/24px Georgia, Serif;
+			color: #555;
+		}
+
+		#sheet-name {
+			font-style: italic;
+			color: blue;
+		}
+	</style>
+</head>
+
+<body>
+	<p>Parent</p>
+	<div id="iframe-area">
+	</div>
+</body>

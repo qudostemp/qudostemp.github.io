@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Client extractor form</title>
+	<script type="text/javascript" src="utils.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/easyXDM.debug.js"></script>
+	<script type="text/javascript" src="json2.js"></script>
+	<script type='text/javascript' > 
+		$(document).ready(function() {
+		    var rpc = new easyXDM.Rpc({
+		    	/**
+                 * Register the url to the remote interface
+                 * @field
+                 */
+                local: window.location.origin + "/easyxdm_child.html",
+                remote: window.location.origin + "/easyxdm_source.html"
+		    },
+		    {
+		        remote: {
+		            getParentHtml:{
+		                // here we tell the Rpc object to stub a method helloWorld for us
+		            }
+		        }
+			});
+
+		    $('#get-parent-html').click(function(){
+				rpc.getParentHtml(function(result){
+	                 alert("Received " + result);
+	            });
+		    });
+
+		});
+	</script>
+	<style type="text/css">
+		body {
+			background: #eee;
+			margin: 0;
+			padding: 0;
+			font: 18px/24px Georgia, Serif;
+			color: #555;
+		}
+
+		#sheet-name {
+			font-style: italic;
+			color: blue;
+		}
+	</style>
+</head>
+
+<body>
+	<p> Child </p>
+	<button id="get-parent-html">Get Parent Html</button>
+</body>
