@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Client extractor form</title>
+	<script type="text/javascript" src="utils.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/base/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="http://trirand.com/blog/jqgrid/themes/ui.jqgrid.css">
+	<script type="text/javascript" src="http://trirand.com/blog/jqgrid/js/i18n/grid.locale-en.js"></script>
+	<script type="text/javascript" src="http://trirand.com/blog/jqgrid/js/jquery.jqGrid.min.js"></script>
+	<script type='text/javascript' > 
+		$(document).ready(function() {
+			console.log(window.parseQueryStringToDict);
+			console.log(window.getQueryStringParameter);
+
+			parameters = window.getClientFormParameters();
+			console.log(parameters);
+
+			function getCandidates(){
+				var candidates = [];
+
+				for (var x = 0; x < 50; x++) {
+				    candidates.push({
+				    	name: 'Z11111111111',
+				    	url : 'http://foo.com',
+				    	industry: null
+				    });
+				}
+	
+				return candidates;
+			}
+			 
+			candidates = getCandidates();
+			console.log(candidates);
+
+			function setupGrid(candidates) { 
+				$("#grid").jqGrid({
+				    datatype: "local",
+				    height: 250,
+				    colNames: ['Name', 'Website', 'Industry'],
+				    colModel: [{
+				        name: 'name',
+				        index: 'name',
+				        width: 150,
+				        editable: true,
+				        edittype: "text",        
+				     },
+				     {
+				        name: 'website',
+				        index: 'website',
+				        width: 150,
+				        editable: true,
+				        edittype: "text",        
+				     },
+				     {
+				        name: 'industry',
+				        index: 'industry',
+				        width: 150,
+				        editable: true,
+				        edittype: "text",        
+				     }
+
+				    ],
+				    caption: "Scraped candidates",
+				    onSelectRow: editRow,
+				});
+
+				var lastSelection;
+
+				function editRow(id) {
+				    if (id && id !== lastSelection) {
+				        var grid = $("#grid");
+				        grid.jqGrid('restoreRow',lastSelection);
+				        grid.jqGrid('editRow',id, {keys:true, focusField: 1});
+				        lastSelection = id;
+				    }
+				}
+
+				var mydata = [];
+
+				alert(candidates.length);
+				console.log(candidates.length);
+
+				for (var i = 0; i < candidates.length; i++) {
+				    mydata[i] = {};
+				    mydata[i]['name'] = candidates[i]['name'];
+				    mydata[i]['website'] = candidates[i]['url'];
+				    mydata[i]['industry'] = '';
+				}
+
+				for (var i = 0; i <= mydata.length; i++) {
+				    $("#grid").jqGrid('addRowData', i + 1, mydata[i]);
+				}
+			}
+
+			setupGrid(candidates);
+		});
+	</script>
+	<style type="text/css">
+		body {
+			background: #eee;
+			margin: 0;
+			padding: 0;
+			font: 18px/24px Georgia, Serif;
+			color: #555;
+		}
+
+		#sheet-name {
+			font-style: italic;
+			color: blue;
+		}
+	</style>
+</head>
+
+<body>
+	<p> Sheet Name :
+		<span id="sheet-name"></span>
+	</p>
+	<div class="input-area">
+		<form id="client-form" action="">
+			<table id="grid"></table>
+		    <button type="submit" class="submit-clients-btn">Submit clients</button>
+		</form>
+		<table>
+			<tbody>
+				<tr>
+					<td>		    
+						<button id="clear-clients-btn">Clear All</button>
+					</td>
+				</tr>
+			</tbody>
+		<table>
+	</div>
+	<div class="status-section" style="width: 80%">
+		<p>Submission Status </p>
+		<textarea class="status-messages" rows="4" cols="50">
+		</textarea>	
+	</div>
+</body>
