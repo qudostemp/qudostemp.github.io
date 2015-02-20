@@ -97,13 +97,112 @@
 				}
 			}
 
-			source_url = window.location.href;
-			selected_text = getSelectionHtml();
-			console.log('Selected text = [' + selected_text + ']');
-			console.log('Source url = [' + source_url+ ']');
+			function createIFrameXDM() {
+				$("body").append("\
+						<div id='wikiframe'>\
+							<style type='text/css'>\
+								#wikiframe iframe { display: none; position: fixed; top: 10%; right: 2%; width: 400px; height: 80%; z-index: 999; border: 10px solid rgba(0,0,0,.5); margin: -5px 0 0 -5px; }\
+							</style>\
+						</div>");
 
-			console.log('Reviewer = ' + window.qudos_bookmarklet_email);
-			createIFrame(selected_text, source_url, window.qudos_bookmarklet_email, window.qudos_bookmarklet_sheetName);
+			    var rpc = new easyXDM.Rpc({
+			    	local: 'http://localhost:8000' + "/easyxdm_source.html",
+			        remote: 'http://localhost:8000' + '/easyxdm_child.html', // the path to the provider
+			        container: document.getElementById("wikiframe"),
+			        props: {
+			            style: {
+			            	/*
+			            	display: "none",
+			            	top : "100px",
+			                border: "1px solid red",
+			                width: "100px",
+			                height: "200px"
+							*/
+			                position: "fixed",
+			                top: "10%",
+			                right: "2%",
+			                width: "400px", 
+			                height: "80%",
+			                zindex: "999",
+			                border: "10px solid rgba(0,0,0,.5)",
+			                margin: "-5px 0 0 -5px"
+			            }
+	        		}
+			    }, 
+			    {
+			        local: {
+			            getParentHtml: function(successFn, errorFn){
+			                // here we expose a simple method with no arguments
+			                // if we want to return a response, we can use `return ....`,
+			                // or we can use the provided callbacks if the operation is async
+			                // or an error occurred
+			                alert('getParentHtml called!')
+			                console.log('getParentHtml called');
+			                html = getSelectionHtml();
+			                return html;
+			            }
+			        }
+			    });
+
+				$('#wikiframe iframe').load(function(){
+					alert('Loaded');
+					$('#wikiframe iframe').slideDown(500);
+				});
+			}
+
+			function loadEasyXDM(successFn) {
+			    var s1, s2, isLoaded = false, xhr, head = document.getElementsByTagName('head')[0];
+			 
+			    function scriptOnLoad(){
+			        if (isLoaded || typeof easyXDM === "undefined" || typeof JSON === "undefined") {
+			            return;
+			        }
+			        isLoaded = true;
+			        // here we put the main code, in this case we expose an ajax endpoint
+			        successFn();
+			    }
+
+			    // load easyXDM
+			    s1 = document.createElement("script");
+			    s1.type = "text/javascript";
+			    s1.src = "https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/easyXDM.debug.js" ;//"http://provider.com/easyXDM.debug.js";
+			    s1.onreadystatechange = function(){
+			        if (this.readyState === "complete" || this.readyState === "loaded") {
+			            scriptOnLoad();
+			        }
+			    };
+			    s1.onload = scriptOnLoad;
+			    head.appendChild(s1);
+			    // load JSON if needed
+			    if (typeof JSON === "undefined" || !JSON) {
+			        s2 = document.createElement("script");
+			        s2.type = "text/javascript";
+			        s2.src = "https://cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.js";
+			        s2.onreadystatechange = function(){
+			            if (this.readyState === "complete" || this.readyState === "loaded") {
+			                scriptOnLoad();
+			            }
+			        };
+			        s2.onload = scriptOnLoad;
+			        head.appendChild(s2);
+			    }
+			}
+
+			function setupChildWindow() {
+				source_url = window.location.href;
+				selected_text = getSelectionHtml();
+				console.log('Selected text = [' + selected_text + ']');
+				console.log('Source url = [' + source_url+ ']');
+
+				console.log('Reviewer = ' + window.qudos_bookmarklet_email);
+				//createIFrame(selected_text, source_url, window.qudos_bookmarklet_email, window.qudos_bookmarklet_sheetName);
+				createIFrameXDM();
+			}
+
+			loadEasyXDM(function(){
+				alert('EasyXDM JS loaded');
+				setupChildWindow();
+			});
 		})();
 	}
 })();

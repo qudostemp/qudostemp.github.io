@@ -11,7 +11,7 @@
 	<script type="text/javascript" src="http://trirand.com/blog/jqgrid/js/jquery.jqGrid.min.js"></script>
 	<script type='text/javascript' > 
 		$(document).ready(function() {
-			function getCandidates(){
+			function getCandidatesDummy(){
 				var candidates = [];
 
 				for (var x = 0; x < 50; x++) {
@@ -48,8 +48,6 @@
 	                errorFn();
 	            });
 			}
-			//candidates = getCandidates();
-			//console.log(candidates);
 
 			function setupGrid(companies) { 
 				$("#grid").jqGrid({

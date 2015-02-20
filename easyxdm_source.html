@@ -8,12 +8,6 @@
 	<script type="text/javascript" src="json2.js"></script>
 	<script type='text/javascript' > 
 		$(document).ready(function() {
-			console.log($('#iframe-area iframe'));
-			$('#iframe-area iframe').load(function(){
-				alert('Loaded');
-				$('#iframe-area iframe').slideDown(500);
-			});
-
 			function createIFrame() {
 			    var rpc = new easyXDM.Rpc({
 			    	local: window.location.origin + "/easyxdm_source.html",
@@ -28,6 +22,7 @@
 			                width: "100px",
 			                height: "200px"
 							*/
+							display : "none",
 			                position: "fixed",
 			                top: "10%",
 			                right: "2%",
@@ -52,10 +47,15 @@
 			            }
 			        }
 			    });
+				console.log($('#iframe-area iframe'));
+				$('#iframe-area iframe').load(function(){
+					alert('Loaded');
+					$('#iframe-area iframe').slideDown(500);
+				});
 			}
 
 			createIFrame();
-			
+
 			/*
 		    rpc.helloWorld(1,2,3, function(response){
 		        // here we can do something with the return value from `helloWorld`
