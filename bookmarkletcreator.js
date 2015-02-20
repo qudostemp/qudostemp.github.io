@@ -114,7 +114,7 @@ $(document).ready(function() {
 
             $result = $('<div>', {'class': 'bookmarklets-section', 
                                   'id': 'bookmarklets'})
-                                .append(createBookMarkletJQueryElements(email, markCompanyBookmarkletCode, 'Mark company bookmarklet'+ '(' + sheetName + ')'))
+                                .append(createBookMarkletJQueryElements(email, markCompanyBookmarkletCode, getbookmarkletName('Mark company bookmarklet', sheetName, dev_mode)))
                                 .append(createBookMarkletJQueryElements(email, addClientBookmarkletCode, getbookmarkletName('Add client bookmarklet', sheetName, dev_mode)));
 
 	    	console.log($result);
