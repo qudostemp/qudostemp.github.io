@@ -9,6 +9,8 @@
 	<link rel="stylesheet" type="text/css" href="http://trirand.com/blog/jqgrid/themes/ui.jqgrid.css">
 	<script type="text/javascript" src="http://trirand.com/blog/jqgrid/js/i18n/grid.locale-en.js"></script>
 	<script type="text/javascript" src="http://trirand.com/blog/jqgrid/js/jquery.jqGrid.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.17.1/easyXDM.debug.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.js"></script>
 	<script type='text/javascript' > 
 		$(document).ready(function() {
 			function getCandidatesDummy(){
@@ -25,8 +27,8 @@
 				return candidates;
 			}
 
-			function getCandidatesActual(successFn, errorFn) {
-				var html = "Arlie &amp; Company<br> Frontier Land<br> Hull &amp; Associates<br> Palisades Group<br> Tucci Investments<br> Banfield Properties<br> G Group";
+			function getCandidatesActual(html, successFn, errorFn) {
+				//var dummyHtml = "Arlie &amp; Company<br> Frontier Land<br> Hull &amp; Associates<br> Palisades Group<br> Tucci Investments<br> Banfield Properties<br> G Group";
 
 	            url = 'http://localhost:5000/getCandidates';
                 var payLoad = {
@@ -92,8 +94,6 @@
 				    }
 				}
 
-				alert('Setting up grid');
-
 				console.log(companies);
 				for (var i = 0; i <= companies.length; i++) {
 				    $("#grid").jqGrid('addRowData', i + 1, companies[i]);
@@ -107,9 +107,32 @@
 			console.log(parameters);
 			$('#sheet-name').text(sheet_name);
 
-			getCandidatesActual(function(data) {
-				var candidates = data.candidates;
+			// Get the current selected HTML
+		    var rpc = new easyXDM.Rpc({
+		    	/**
+                 * Register the url to the remote interface
+                 * @field
+                 */
+                local: window.location.origin + "/candidates.html",
+                remote: window.location.origin + "/easyxdm_source.html"
+		    },
+		    {
+		        remote: {
+		            getParentHtml:{
+		                // here we tell the Rpc object to stub a method helloWorld for us
+		            }
+		        }
+			});
 
+		    function getCandidatesFromCurrentSelection(successFn, errorFn) {
+				rpc.getParentHtml(function(html){
+	                 alert("Got html from parent window " + html);
+	     			getCandidatesActual(html, successFn, errorFn);
+	     		});
+		    }
+
+		    function convertToGridData(apiData) {
+		    	var candidates = apiData.candidates;
 				// success
 				var gridData = []
 				for (var idx = 0; idx < candidates.length; idx++) {
@@ -119,12 +142,105 @@
 						'industry' : null
 					})
 				}
-				setupGrid(gridData);
+				return gridData;
+		    }
 
-			}, function() {
-				// error 	
-				alert('No candidates found');			
-			});
+			function enableSubmitBtn() {
+				$('#submit-clients-btn').attr("disabled", false);
+			}
+			function disableSubmitBtn() {
+				$('#submit-clients-btn').attr("disabled", true);
+			}
+
+		    getCandidatesFromCurrentSelection(function(data) {
+		    		gridData = convertToGridData(data);
+					setupGrid(gridData);
+				}, function() {
+					// error 	
+					alert('No candidates found');			
+				});
+
+		    var statusLogger = new function() {
+			    this.appendStatus = function appendStatus(msg) {
+			    	current = $(".status-messages").val();
+			    	current = current + "\n";
+			    	new_text = current + msg;  
+			    	$(".status-messages").val(new_text);
+				};
+
+			    this.clearStatus = function clearStatus(msg) {
+			    	$(".status-messages").val("");
+				};
+			}
+
+		    $('#import-clients-btn').click(function(evt) {
+		    		evt.preventDefault();
+				    getCandidatesFromCurrentSelection(function(data) {
+			    		gridData = convertToGridData(data);
+						setupGrid(gridData);
+					}, function() {
+						// error 	
+						alert('No candidates found');			
+					});
+				});
+
+		    $('#clear-clients-btn').click(function(evt) {
+		    		evt.preventDefault();
+		    		$('#grid').jqGrid('clearGridData');
+				});
+
+		    $('#client-form').submit(function(evt){
+		    	disableSubmitBtn();
+		    	evt.preventDefault();
+		    	//Get data from jqGrid
+		    	var allRowsInGrid = $('#grid').jqGrid('getGridParam','data');
+		    	console.log( allRowsInGrid.length + ' clients available');
+
+				var validRows = allRowsInGrid.filter(function(index, client) { return client.name != ''; })
+		    	// Convert (basically remove the id)
+
+		    	function clean(text) {
+		    		return (typeof(text) != 'undefined' && text != null && text != ''? text : '');
+		    	}
+
+				var clientsData = validRows.map(function(client, index) {
+					return {
+						name: client.name,
+						website: clean(client.website),
+						industry: clean(client.industry),
+					}
+				});
+
+		    	var payLoad = {
+		    		sourceUrl : source_url,
+		    		reviewer : reviewer,
+		    		sheetName : sheet_name,
+		    		clients : clientsData
+		    	};
+
+		    	window.qudos_submitClients(payLoad, 
+		    		statusLogger,
+			    	function() {
+			    		//success function
+			    	}, function() {
+			    		//error function
+			    	}, function() {
+			    		//always function
+			    		enableSubmitBtn();
+			    	}
+		    	)
+
+		    	/*
+				// Doing this because the original clients info is a JQuery selector list and cannot be JSON stringified easily
+			    var payload_clients_info = new Array();
+				for (var i =0 ; i < clients_info.length; i++ ) { 
+					payload_clients_info[i] = clients_info[i]; 
+				} */
+
+				// Call submit
+
+		    });
+
 		});
 	</script>
 	<style type="text/css">
@@ -150,13 +266,16 @@
 	<div class="input-area">
 		<form id="client-form" action="">
 			<table id="grid"></table>
-		    <button type="submit" class="submit-clients-btn">Submit clients</button>
+		    <button type="submit" id="submit-clients-btn">Submit clients</button>
 		</form>
 		<table>
 			<tbody>
 				<tr>
 					<td>		    
 						<button id="clear-clients-btn">Clear All</button>
+					</td>
+					<td>		    
+						<button id="import-clients-btn" title="This will append the grid with candidates from HTML">Import HTML</button>
 					</td>
 				</tr>
 			</tbody>

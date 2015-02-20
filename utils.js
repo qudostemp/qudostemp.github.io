@@ -56,8 +56,72 @@
 	    return html;
 	}
 
+	function getBaseUrl() {
+		return 'https://frozen-taiga-8902.herokuapp.com/proxySubmit'; // heroku proxy URL to get around X-domain issues
+	}
+
+	function submitClients(payLoad, statusLogger, successFn, errorFn, alwaysFn) {
+		if (typeof(payLoad.clients) == 'undefined' && (payLoad.clients == null)) {
+	       statusLogger.appendStatus('No clients submitted');
+	       return;
+		}
+
+	    url = getBaseUrl();
+	    console.log('Source_url :' + source_url + ' for reviewer :' + reviewer + ' submitting a request to :' + url);
+	    statusLogger.appendStatus('Submitting (' + payLoad.clients.length + ') clients')
+
+	    console.log(payLoad);
+
+	    $.ajax({
+		      type:'POST',
+		      url: url,
+		      data: JSON.stringify(payLoad),
+		      dataType: "json",
+		      contentType: "application/json; charset=UTF-8"
+	    })
+	    .done (function (data) {
+	    	if( data && data.numClients !== undefined && data.numClients == payLoad.clients.length) {
+		       console.log("Call succeeded. Received data: " + data);
+		       statusLogger.appendStatus('Saved ' + payLoad.clients.length + ' clients  successfully');
+	   		} 
+	   		else {
+		       console.log("Call failed");
+		       var numClientsSaved = 0;
+
+				if (data && data.numClients !== undefined) {
+					numClientsSaved = data.numClients;
+				}
+				statusLogger.appendStatus('Error saving clients: Only ' + data.numClients + ' out of ' + payLoad.clients.length + ' saved');
+	   		}
+	   		successFn(data);
+	    })
+	    .fail (function ( jqXHR, textStatus, errorThrown) {
+	       console.log("Call failed");
+	       var errorMsg = jqXHR.responseText;
+	       if(jqXHR.responseText) {
+	       		try{
+		       		var jsonError = JSON.parse(jqXHR.responseText);
+		       		if (jsonError && jsonError.message !== undefined) {
+			       		errorMsg = jsonError.message;
+			       		errorMsg = 'Error msg is (' + errorMsg + ')'; 
+		       		}
+		       	}
+		       	catch(err) {
+		       	}
+	       	}
+
+	       	statusLogger.appendStatus('Error saving clients. Not all clients may be in the sheet. \n' + errorMsg);
+	       	errorFn(jqXHR, textStatus, errorThrown);
+        })
+        .always(function(){
+			alwaysFn();
+        });
+	}
+
+
 	window.parseQueryStringToDict = parseQueryStringToDict;
 	window.getQueryStringParameter = getQueryStringParameter;
 	window.getClientFormParameters = getClientFormParameters;
 	window.qudos_getSelectionHtml = getSelectionHtml;
+	window.qudos_submitClients = submitClients;
 })();
