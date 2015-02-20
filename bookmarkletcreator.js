@@ -45,18 +45,43 @@ $(document).ready(function() {
         evt.preventDefault();
         var email = $("#user-email").val();
         var sheetName = $("#sheet-name").val();
+        var dev_mode = $('#dev-mode-check').prop('checked');
+        console.log("Is dev mode : " + dev_mode);
 
         if (email && sheetName){
             var email_code = "window.qudos_bookmarklet_email = '" + email + "';";
             var sheet_name_code = "window.qudos_bookmarklet_sheetName = '" + sheetName + "';";
+            var bookmarklet_mode_code = "window.qudos_bookmarklet_mode = " + dev_mode + ";";
 
         	var markCompanyBookmarkletCode = "if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src= window.location.protocol + '//rajeevs.github.io/markcompanybookmarklet.js?';};";
             markCompanyBookmarkletCode += email_code;
             markCompanyBookmarkletCode += sheet_name_code;
+            markCompanyBookmarkletCode += bookmarklet_mode_code;
 
-            var addClientBookmarkletCode = "if(window.clientBookmarklet!==undefined){clientBookmarklet();}else{document.body.appendChild(document.createElement('script')).src= window.location.protocol + '//rajeevs.github.io/addclientbookmarklet.js?';};";
+            var addClientBookmarkletCode = "                            \
+                function getBookmarkletBaseUrl() {                      \
+                    if(window.qudos_bookmarklet_mode = 'DEV') {         \
+                        return 'http://localhost:8000';                 \
+                    } else {                                            \
+                        return window.location.protocol + '//rajeevs.github.io';    \
+                    }                                                               \
+                }                                                                   \
+                                                                                    \
+                function getBookmarkletFullUrl(resource) {                          \
+                    return getBookmarkletBaseUrl() + resource;                      \
+                }                                                                   \
+                                                                                    \
+                if (window.clientBookmarklet !== undefined) {                       \
+                    clientBookmarklet();                                            \
+                } else {                                                            \
+                    document.body.appendChild(document.createElement('script')).src = getBookmarkletFullUrl('/addclientbookmarklet.js?');   \
+                };  \
+            ";
+
+            //var addClientBookmarkletCode = "if(window.clientBookmarklet!==undefined){clientBookmarklet();}else{document.body.appendChild(document.createElement('script')).src= window.location.protocol + '//rajeevs.github.io/addclientbookmarklet.js?';};";
             addClientBookmarkletCode += email_code;
             addClientBookmarkletCode += sheet_name_code;
+            addClientBookmarkletCode += bookmarklet_mode_code;
 
         	console.log(markCompanyBookmarkletCode);
             console.log(addClientBookmarkletCode);
@@ -82,10 +107,15 @@ $(document).ready(function() {
                     })).append(' to the bookmarks bar');
             }
 
+            function getbookmarkletName(base_name, sheetName, dev_mode) {
+                var mode_prefix = dev_mode ? '(DEV-MODE) ': '';
+                return mode_prefix + base_name + '(' + sheetName + ')';
+            }
+
             $result = $('<div>', {'class': 'bookmarklets-section', 
                                   'id': 'bookmarklets'})
                                 .append(createBookMarkletJQueryElements(email, markCompanyBookmarkletCode, 'Mark company bookmarklet'+ '(' + sheetName + ')'))
-                                .append(createBookMarkletJQueryElements(email, addClientBookmarkletCode, 'Add client bookmarklet' + '(' + sheetName + ')'));
+                                .append(createBookMarkletJQueryElements(email, addClientBookmarkletCode, getbookmarkletName('Add client bookmarklet', sheetName, dev_mode)));
 
 	    	console.log($result);
 	    	if ($(".bookmarklets-section")) {
