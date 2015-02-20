@@ -46,7 +46,17 @@
 			function createIFrame(client_name, source_url, reviewer_email, sheetName) {
 				if ($("#wikiframe").length == 0) {
 					encoded_client_name = encodeURIComponent(client_name);
-					client_form_url = window.location.protocol +  "//rajeevs.github.io/clientsForm2.html?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url) + "&reviewer=" + reviewer_email + "&sheet_name=" + encodeURIComponent(sheetName);
+
+					client_form_params = "?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url) + "&reviewer=" + reviewer_email + "&sheet_name=" + encodeURIComponent(sheetName);
+
+					if(window.qudos_bookmarklet_mode) {
+						client_form_base_url = window.location.protocol +  "//localhost:8000";
+					} else {
+						client_form_base_url = window.location.protocol +  "//rajeevs.github.io/clientsForm2.html"; 
+					}
+
+					client_form_url = client_form_base_url + "/clientsForm2.html" + client_form_params;
+
 					$("body").append("\
 						<div id='wikiframe'>\
 							<iframe src='" + client_form_url + "' onload=\"$('#wikiframe iframe').slideDown(500);\">Enable iFrames.</iframe>\
