@@ -38,24 +38,51 @@
 			    return html;
 			}
 
-			source_url = window.location.href;
-			client_name = getSelectionHtml();
-			console.log('Selected client name = [' + client_name+ ']');
-			console.log('Source url = [' + source_url+ ']');
+			function isHtml(text) {
+				if(text !== undefined && text) {
+					return /<[a-z][\s\S]*>/i.test(text);
+				} else {
+					return false;
+				}
+			}
+
+			function getFormBaseUrl() {
+				if(window.qudos_bookmarklet_mode) {
+					var form_base_url = window.location.protocol +  "//localhost:8000";
+				} else {
+					var form_base_url = window.location.protocol +  "//rajeevs.github.io"; 
+				}
+				return form_base_url;
+			}
+
+			function getClientForm2Url(client_name, source_url, reviewer_email, sheetName) {
+				encoded_client_name = encodeURIComponent(client_name);
+
+				client_form_params = "?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url) + "&reviewer=" + reviewer_email + "&sheet_name=" + encodeURIComponent(sheetName);
+
+				client_form_url = getFormBaseUrl() + "/clientsForm2.html" + client_form_params;
+
+				return client_form_url;
+			}
+
+			function getCandidatesFormUrl(selected_text, source_url, reviewer_email, sheetName) {
+				form_params = "?source_url="+ encodeURIComponent(source_url) + "&reviewer=" + reviewer_email + "&sheet_name=" + encodeURIComponent(sheetName);
+
+				client_form_url = getFormBaseUrl() + "/candidates.html" + form_params;
+
+				return client_form_url;
+			}
 
 			function createIFrame(client_name, source_url, reviewer_email, sheetName) {
 				if ($("#wikiframe").length == 0) {
-					encoded_client_name = encodeURIComponent(client_name);
-
-					client_form_params = "?num_clients=10&client_name=" + encoded_client_name + "&source_url="+ encodeURIComponent(source_url) + "&reviewer=" + reviewer_email + "&sheet_name=" + encodeURIComponent(sheetName);
-
-					if(window.qudos_bookmarklet_mode) {
-						client_form_base_url = window.location.protocol +  "//localhost:8000";
+					if(isHtml(selected_text)) {
+						url_fn = getCandidatesFormUrl;
 					} else {
-						client_form_base_url = window.location.protocol +  "//rajeevs.github.io/clientsForm2.html"; 
+						url_fn = getClientForm2Url;
 					}
 
-					client_form_url = client_form_base_url + "/clientsForm2.html" + client_form_params;
+					client_form_url = url_fn(selected_text, source_url, reviewer_email, sheetName);
+
 
 					$("body").append("\
 						<div id='wikiframe'>\
@@ -70,8 +97,13 @@
 				}
 			}
 
+			source_url = window.location.href;
+			selected_text = getSelectionHtml();
+			console.log('Selected text = [' + selected_text + ']');
+			console.log('Source url = [' + source_url+ ']');
+
 			console.log('Reviewer = ' + window.qudos_bookmarklet_email);
-			createIFrame(client_name, source_url, window.qudos_bookmarklet_email, window.qudos_bookmarklet_sheetName);
+			createIFrame(selected_text, source_url, window.qudos_bookmarklet_email, window.qudos_bookmarklet_sheetName);
 		})();
 	}
 })();

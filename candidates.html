@@ -11,12 +11,6 @@
 	<script type="text/javascript" src="http://trirand.com/blog/jqgrid/js/jquery.jqGrid.min.js"></script>
 	<script type='text/javascript' > 
 		$(document).ready(function() {
-			console.log(window.parseQueryStringToDict);
-			console.log(window.getQueryStringParameter);
-
-			parameters = window.getClientFormParameters();
-			console.log(parameters);
-
 			function getCandidates(){
 				var candidates = [];
 
@@ -30,11 +24,34 @@
 	
 				return candidates;
 			}
-			 
-			candidates = getCandidates();
-			console.log(candidates);
 
-			function setupGrid(candidates) { 
+			function getCandidatesActual(successFn, errorFn) {
+				var html = "Arlie &amp; Company<br> Frontier Land<br> Hull &amp; Associates<br> Palisades Group<br> Tucci Investments<br> Banfield Properties<br> G Group";
+
+	            url = 'http://localhost:5000/getCandidates';
+                var payLoad = {
+	                html: html
+	            };
+
+	            $.ajax({
+	                type: 'POST',
+	                url: url,
+	                data: JSON.stringify(payLoad),
+	                dataType: "json",
+	                contentType: "application/json; charset=UTF-8"
+	            }).done(function(data) {
+	                console.log('success');
+	                console.log(data);
+	                successFn(data);
+	            }).fail(function() {
+	                console.log('fail');
+	                errorFn();
+	            });
+			}
+			//candidates = getCandidates();
+			//console.log(candidates);
+
+			function setupGrid(companies) { 
 				$("#grid").jqGrid({
 				    datatype: "local",
 				    height: 250,
@@ -49,14 +66,14 @@
 				     {
 				        name: 'website',
 				        index: 'website',
-				        width: 150,
+				        width: 100,
 				        editable: true,
 				        edittype: "text",        
 				     },
 				     {
 				        name: 'industry',
 				        index: 'industry',
-				        width: 150,
+				        width: 100,
 				        editable: true,
 				        edittype: "text",        
 				     }
@@ -77,24 +94,39 @@
 				    }
 				}
 
-				var mydata = [];
+				alert('Setting up grid');
 
-				alert(candidates.length);
-				console.log(candidates.length);
-
-				for (var i = 0; i < candidates.length; i++) {
-				    mydata[i] = {};
-				    mydata[i]['name'] = candidates[i]['name'];
-				    mydata[i]['website'] = candidates[i]['url'];
-				    mydata[i]['industry'] = '';
-				}
-
-				for (var i = 0; i <= mydata.length; i++) {
-				    $("#grid").jqGrid('addRowData', i + 1, mydata[i]);
+				console.log(companies);
+				for (var i = 0; i <= companies.length; i++) {
+				    $("#grid").jqGrid('addRowData', i + 1, companies[i]);
 				}
 			}
 
-			setupGrid(candidates);
+			console.log(window.parseQueryStringToDict);
+			console.log(window.getQueryStringParameter);
+
+			parameters = window.getClientFormParameters();
+			console.log(parameters);
+			$('#sheet-name').text(sheet_name);
+
+			getCandidatesActual(function(data) {
+				var candidates = data.candidates;
+
+				// success
+				var gridData = []
+				for (var idx = 0; idx < candidates.length; idx++) {
+					gridData.push({
+						'name' : candidates[idx],
+						'url' : '',
+						'industry' : null
+					})
+				}
+				setupGrid(gridData);
+
+			}, function() {
+				// error 	
+				alert('No candidates found');			
+			});
 		});
 	</script>
 	<style type="text/css">
