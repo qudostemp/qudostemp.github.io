@@ -90,7 +90,20 @@
 
 				var grid = $("#grid");
 
-				grid.setGridWidth($(window).width() * 0.95 );
+				/* For some reason, in Chrome, window.InnerWidth and $window.width() are 0 after window load
+					setting a 500 ms timeout for resize when the window gets fixed */
+				setTimeout(function(){ 
+					if($(window).width() > 0 ) {
+						grid.setGridWidth($(window).width() * 0.95 );
+					}
+				}, 500);
+
+				$(window).load(function() {
+					if($(window).width() > 0 ) {
+						grid.setGridWidth($(window).width() * 0.95 );
+					}
+				});
+
 				var editRow = function(id) {
 			        if (id && id !== lastSel) {
 			            grid.jqGrid('restoreRow',lastSel);
