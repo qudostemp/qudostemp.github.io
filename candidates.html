@@ -286,8 +286,7 @@
 		    var statusLogger = new function() {
 			    this.appendStatus = function appendStatus(msg) {
 			    	current = $(".status-messages").val();
-			    	current = current + "\n";
-			    	new_text = current + msg;  
+			    	new_text = msg + "\n" + current;  
 			    	$(".status-messages").val(new_text);
 				};
 
