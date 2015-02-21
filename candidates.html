@@ -94,7 +94,7 @@
 				var editRow = function(id) {
 			        if (id && id !== lastSel) {
 			            grid.jqGrid('restoreRow',lastSel);
-			            grid.jqGrid('editRow', id, true, null, null, 'clientArray');
+			            grid.jqGrid('editRow', id, true, {keys:true, focusField: 1}, null, 'clientArray');
 			            lastSel = id;
 			        }
 				}
@@ -211,7 +211,7 @@
 				}
 
 				console.log(companies);
-				for (var i = 0; i <= companies.length; i++) {
+				for (var i = 0; i < companies.length; i++) {
 				    $("#grid").jqGrid('addRowData', i + 1, companies[i]);
 				}
 			}
@@ -270,7 +270,7 @@
 					gridData.push({
 						'name' : candidates[idx],
 						'url' : '',
-						'industry' : null
+						'industry' : ''
 					})
 				}
 				return gridData;
@@ -282,14 +282,6 @@
 			function disableSubmitBtn() {
 				$('#submit-clients-btn').attr("disabled", true);
 			}
-
-		    getCandidatesFromCurrentSelection(function(data) {
-		    		gridData = convertToGridData(data);
-					setupGrid(gridData);
-				}, function() {
-					// error 	
-					alert('No candidates found');			
-				});
 
 		    var statusLogger = new function() {
 			    this.appendStatus = function appendStatus(msg) {
@@ -304,6 +296,20 @@
 				};
 			}
 
+		    getCandidatesFromCurrentSelection(function(data) {
+		    		gridData = convertToGridData(data);
+					setupGrid(gridData);
+				}, function() {
+					// error 	
+					statusLogger.appendStatus('No candidates found');	
+     				var data = {
+		  				candidates: []
+	   				};
+		    		gridData = convertToGridData(data);
+					setupGrid(gridData);
+				});
+
+
 		    $('#import-clients-btn').click(function(evt) {
 		    		evt.preventDefault();
 				    getCandidatesFromCurrentSelection(function(data) {
@@ -312,7 +318,7 @@
 						statusLogger.appendStatus('Added (' + gridData.length + ') clients to table')
 					}, function() {
 						// error 	
-						alert('No candidates found');			
+						statusLogger.appendStatus('No candidates found');	
 					});
 				});
 
