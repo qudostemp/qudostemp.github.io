@@ -118,10 +118,19 @@
         });
 	}
 
+	function isHtml(text) {
+		if(text !== undefined && text) {
+			return /<[a-z][\s\S]*>/i.test(text);
+		} else {
+			return false;
+		}
+	}
+
 
 	window.parseQueryStringToDict = parseQueryStringToDict;
 	window.getQueryStringParameter = getQueryStringParameter;
 	window.getClientFormParameters = getClientFormParameters;
 	window.qudos_getSelectionHtml = getSelectionHtml;
 	window.qudos_submitClients = submitClients;
+	window.qudos_isHtml = isHtml;
 })();

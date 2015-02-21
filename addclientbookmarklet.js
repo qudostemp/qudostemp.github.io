@@ -138,7 +138,6 @@
 				                // if we want to return a response, we can use `return ....`,
 				                // or we can use the provided callbacks if the operation is async
 				                // or an error occurred
-				                alert('getParentHtml called!')
 				                console.log('getParentHtml called');
 				                html = getSelectionHtml();
 				                return html;
@@ -147,7 +146,6 @@
 				    });
 
 					$('#wikiframe iframe').load(function(){
-						alert('Loaded');
 						$('#wikiframe iframe').slideDown(500);
 					});
 				} else {
@@ -211,11 +209,13 @@
 
 			if(!easyXDMLoaded()) {
 				loadEasyXDM(function(){
-					alert('EasyXDM JS loaded');
+					console.log('EasyXDM JS loaded');
+					handleChildWindow();
 				});
+			} else {
+				handleChildWindow();
 			}
 
-			handleChildWindow();
 		})();
 	}
 })();

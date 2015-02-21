@@ -126,8 +126,23 @@
 
 		    function getCandidatesFromCurrentSelection(successFn, errorFn) {
 				rpc.getParentHtml(function(html){
-	                 alert("Got html from parent window " + html);
-	     			getCandidatesActual(html, successFn, errorFn);
+			    	isHtml = window.qudos_isHtml(html);
+	                console.log("Got html from parent window " + html);
+	                if(isHtml) {
+	     				console.log('HTML selected: ' + html);
+	     				getCandidatesActual(html, successFn, errorFn);
+	     			} 
+	     			else {
+	     				console.log('Plain text selected: ' + html);
+	     				if ( (typeof html === 'undefined') || (typeof html.length === 'undefined') || html.length == 0) {
+	     					errorFn();
+	     				} else {
+		     				var data = {
+		     					candidates: [ html ]
+		     				}
+		     				successFn(data);
+		     			}
+	     			}
 	     		});
 		    }
 
@@ -178,6 +193,7 @@
 				    getCandidatesFromCurrentSelection(function(data) {
 			    		gridData = convertToGridData(data);
 						setupGrid(gridData);
+						statusLogger.appendStatus('Added (' + gridData.length + ') clients to table')
 					}, function() {
 						// error 	
 						alert('No candidates found');			
