@@ -316,6 +316,15 @@
 					});
 				});
 
+			$('#loadingDiv')
+			    .ajaxStart(function() {
+			    	$(this).addClass("loading"); 
+			    })
+			    .ajaxStop(function() {
+			    	$(this).removeClass("loading");
+			    })
+			;
+
 		    $('#clear-clients-btn').click(function(evt) {
 		    		evt.preventDefault();
 		    		$('#grid').jqGrid('clearGridData');
@@ -388,6 +397,32 @@
 			font-style: italic;
 			color: blue;
 		}
+
+		/* Start by setting display:none to make this hidden.
+		   Then we position it in relation to the viewport window
+		   with position:fixed. Width, height, top and left speak
+		   speak for themselves. Background we set to 80% white with
+		   our animation centered, and no-repeating */
+		  
+		.modal {
+		    display:    none;
+		    position:   fixed;
+		    z-index:    1000;
+		    top:        0;
+		    left:       0;
+		    height:     100%;
+		    width:      100%;
+		    background: rgba( 255, 255, 255, .8 ) 
+		                url('http://i.stack.imgur.com/FhHRx.gif') 
+		                50% 50% 
+		                no-repeat;
+		}
+
+		/* Anytime the body has the loading class, our
+		   modal element will be visible */
+		#loadingDiv.loading .modal {
+		    display: block;
+		}
 	</style>
 </head>
 
@@ -399,22 +434,28 @@
 		<form id="client-form" action="">
 			<table id="grid"></table>
 			<div id="pager"></div>
-		    <button type="submit" id="submit-clients-btn">Submit clients</button>
+    		<table id="buttons">
+				<tbody>
+					<tr>
+						<td>
+						    <button type="submit" id="submit-clients-btn">Submit clients</button>
+						</td>
+						<td>		    
+							<button id="clear-clients-btn">Clear All</button>
+						</td>
+						<td>		    
+							<button id="import-clients-btn" title="This will append the grid with candidates from HTML">Import HTML</button>
+						</td>
+					</tr>
+				</tbody>
+			<table>
+
 		</form>
-		<table>
-			<tbody>
-				<tr>
-					<td>		    
-						<button id="clear-clients-btn">Clear All</button>
-					</td>
-					<td>		    
-						<button id="import-clients-btn" title="This will append the grid with candidates from HTML">Import HTML</button>
-					</td>
-				</tr>
-			</tbody>
-		<table>
 	</div>
-	<div class="status-section" style="width: 80%">
+	<div class="status-section" style="width: 95%">
+		<div id="loadingDiv">
+			<div class="modal"></div>
+		</div>
 		<p>Submission Status </p>
 		<textarea class="status-messages" rows="4" cols="50">
 		</textarea>	
