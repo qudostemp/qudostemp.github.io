@@ -50,6 +50,7 @@
 	                errorFn();
 	            });
 			}
+			var lastSel;
 
 			function setupGrid(companies) { 
 				$("#grid").jqGrid({
@@ -66,7 +67,7 @@
 				     {
 				        name: 'website',
 				        index: 'website',
-				        width: 100,
+				        width: 150,
 				        editable: true,
 				        edittype: "text",        
 				     },
@@ -80,9 +81,124 @@
 
 				    ],
 				    caption: "Scraped candidates",
+			        pager: '#pager',
+				    'cellsubmit' : 'clientArray',
+				    editurl: 'clientArray',
+				    viewrecords: true,
 				    onSelectRow: editRow,
 				});
 
+				var grid = $("#grid");
+
+				grid.setGridWidth($(window).width() * 0.95 );
+				var editRow = function(id) {
+			        if (id && id !== lastSel) {
+			            grid.jqGrid('restoreRow',lastSel);
+			            grid.jqGrid('editRow', id, true, null, null, 'clientArray');
+			            lastSel = id;
+			        }
+				}
+
+				var onclickSubmitLocal = function(options,postdata) {
+				        var grid_p = grid[0].p,
+				            idname = grid_p.prmNames.id,
+				            grid_id = grid[0].id,
+				            id_in_postdata = grid_id+"_id",
+				            rowid = postdata[id_in_postdata],
+				            addMode = rowid === "_empty",
+				            oldValueOfSortColumn;
+
+				        // postdata has row id property with another name. we fix it:
+				        if (addMode) {
+				            // generate new id
+				            var new_id = grid_p.records + 1;
+				            while ($("#"+new_id).length !== 0) {
+				                new_id++;
+				            }
+				            postdata[idname] = String(new_id);
+				        } else if (typeof(postdata[idname]) === "undefined") {
+				            // set id property only if the property not exist
+				            postdata[idname] = rowid;
+				        }
+				        delete postdata[id_in_postdata];
+
+				        // save old value from the sorted column
+				        oldValueOfSortColumn = grid_p.sortname === "" ? undefined: grid.jqGrid('getCell',rowid,grid_p.sortname);
+
+
+				        if (addMode) {
+				            grid.jqGrid("addRowData",rowid,postdata,options.addedrow);
+				        } else {
+				            grid.jqGrid("setRowData",rowid,postdata);
+				        }
+
+				        if ((addMode && options.closeAfterAdd) || (!addMode && options.closeAfterEdit)) {
+				            // close the edit/add dialog
+				            $.jgrid.hideModal("#editmod"+grid_id,
+				                              {gb:"#gbox_"+grid_id,jqm:options.jqModal,onClose:options.onClose});
+				        }
+
+				        if (postdata[grid_p.sortname] !== oldValueOfSortColumn) {
+				            // if the data are changed in the column by which are currently sorted
+				            // we need resort the grid
+				            setTimeout(function() {
+				                grid.trigger("reloadGrid", [{current:true}]);
+				            },100);
+				        }
+
+				        // !!! the most important step: skip ajax request to the server
+				        this.processing = true;
+				        return {};
+				    };
+
+				var addSettings = {
+				        //recreateForm:true,
+				        jqModal:true,
+				        reloadAfterSubmit:false,
+				        savekey: [true,13],
+				        closeOnEscape:true,
+				        closeAfterAdd:true,
+				        onclickSubmit:onclickSubmitLocal
+				    };
+
+				var delSettings = {
+				        // because I use "local" data I don't want to send the changes to the server
+				        // so I use "processing:true" setting and delete the row manually in onclickSubmit
+				        onclickSubmit: function(options) { //, rowid) {
+				            var grid_id = grid[0].id,
+				                grid_p = grid[0].p,
+				                newPage = grid_p.page,
+				                rowids = grid_p.multiselect? grid_p.selarrrow: [grid_p.selrow];
+
+				            // reset the value of processing option to true
+				            // because the value can be changed by jqGrid
+				            options.processing = true;
+
+				            // delete selected row/rows (multiselect:true)
+				            $.each(rowids, function () {
+				                grid.delRowData(this);
+				            });
+				            // delete the row
+				            //grid.delRowData(rowid);
+				            $.jgrid.hideModal("#delmod"+grid_id,
+				                              {gb:"#gbox_"+grid_id,jqm:options.jqModal,onClose:options.onClose});
+
+				            if (grid_p.lastpage > 1) {// on the multipage grid reload the grid
+				                if (grid_p.reccount === 0 && newPage === grid_p.lastpage) {
+				                    // if after deliting there are no rows on the current page
+				                    // which is the last page of the grid
+				                    newPage--; // go to the previous page
+				                }
+				                // reload grid to make the row from the next page visable.
+				                grid.trigger("reloadGrid", [{page:newPage}]);
+				            }
+
+				            return true;
+				        },
+				        processing:true
+				    };
+
+				$('#grid').navGrid("#pager",{edit:false,add:true,del:true}, {}, addSettings, delSettings);
 				var lastSelection;
 
 				function editRow(id) {
@@ -282,6 +398,7 @@
 	<div class="input-area">
 		<form id="client-form" action="">
 			<table id="grid"></table>
+			<div id="pager"></div>
 		    <button type="submit" id="submit-clients-btn">Submit clients</button>
 		</form>
 		<table>
