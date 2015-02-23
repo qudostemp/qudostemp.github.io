@@ -107,6 +107,36 @@
 								</style>\
 							</div>");
 
+					/*
+					This commented section is about making the iFrame draggable and resizable (esp. from SW corner). However, there are
+					issues due to us using position:fixed which interferes with dragging. This needs some cutom actions on start and stop
+					methods of draggable() to fix the position using offset() and .top / .left. 
+
+					$.getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js')
+					  .done(function( script, textStatus ) {
+						    console.log( 'JQueryUI loaded : ' + textStatus );
+	    		            $("#wikiframe")
+				                //.resizable()
+				                .draggable({
+				                	iframeFix : true,
+				                	start: function( event, ui ) { 
+				                		//$('#wikiframe iframe').css('position', 'absolute'); 
+				                		console.log('Drag started');
+				                	},
+				                	stop: function( event, ui ) { 
+				                		var iFrame = $('#wikiframe iframe');
+				                		old_offset = iFrame.offset();
+				                		iFrame.css('position', 'fixed'); 
+				                		iFrame.offset(old_offset);
+				                		console.log('Drag stopped');
+				                	}
+				                });           
+						  })
+					  .fail(function( jqxhr, settings, exception ) {
+						    console.log( "Triggered ajaxError handler." );
+						});
+					*/
+					
 				    var rpc = new easyXDM.Rpc({
 				    	local: 'http://localhost:8000' + "/easyxdm_source.html",
 				        remote: getCandidatesFormUrl(selected_html, source_url, reviewer_email, sheetName) , //'http://localhost:8000' + '/candidates.html', // the path to the provider
