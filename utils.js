@@ -56,8 +56,20 @@
 	    return html;
 	}
 
-	function getBaseUrl() {
-		return 'https://frozen-taiga-8902.herokuapp.com/proxySubmit'; // heroku proxy URL to get around X-domain issues
+	function getApiBaseUrl() {
+		if (window.qudos_bookmarklet_mode) {
+			return 'http://localhost:5000'; // localhost proxy URL to get around X-domain issues
+		} else {
+			return 'https://frozen-taiga-8902.herokuapp.com'; // heroku proxy URL to get around X-domain issues
+		}
+	}
+
+	function getSubmitUrl() {
+		return getApiBaseUrl() + '/proxySubmit'; 
+	}
+
+	function getCandidatesUrl() {
+		return getApiBaseUrl() + '/getCandidates'; 
 	}
 
 	function submitClients(payLoad, statusLogger, successFn, errorFn, alwaysFn) {
@@ -66,7 +78,7 @@
 	       return;
 		}
 
-	    url = getBaseUrl();
+	    url = getSubmitUrl();
 	    console.log('Source_url :' + source_url + ' for reviewer :' + reviewer + ' submitting a request to :' + url);
 	    statusLogger.appendStatus('Submitting (' + payLoad.clients.length + ') clients')
 
@@ -133,4 +145,5 @@
 	window.qudos_getSelectionHtml = getSelectionHtml;
 	window.qudos_submitClients = submitClients;
 	window.qudos_isHtml = isHtml;
+	window.qudos_getCandidatesUrl = getCandidatesUrl;
 })();

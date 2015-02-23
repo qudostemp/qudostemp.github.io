@@ -13,28 +13,13 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.js"></script>
 	<script type='text/javascript' > 
 		$(document).ready(function() {
-			function getCandidatesDummy(){
-				var candidates = [];
-
-				for (var x = 0; x < 50; x++) {
-				    candidates.push({
-				    	name: 'Z11111111111',
-				    	url : 'http://foo.com',
-				    	industry: null
-				    });
-				}
-	
-				return candidates;
-			}
-
 			function getCandidatesActual(html, successFn, errorFn) {
-				//var dummyHtml = "Arlie &amp; Company<br> Frontier Land<br> Hull &amp; Associates<br> Palisades Group<br> Tucci Investments<br> Banfield Properties<br> G Group";
-
-	            url = 'http://localhost:5000/getCandidates';
+	            url = window.qudos_getCandidatesUrl();
                 var payLoad = {
 	                html: html
 	            };
 
+	            console.log('Calling API : ' + url +' for candidates');
 	            $.ajax({
 	                type: 'POST',
 	                url: url,
