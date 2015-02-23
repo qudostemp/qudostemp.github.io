@@ -326,7 +326,13 @@
 		    		evt.preventDefault();
 				    getCandidatesFromCurrentSelection(function(data) {
 			    		gridData = convertToGridData(data);
-						setupGrid(gridData);
+						var nrows = $("#grid").getGridParam("reccount");
+						// Add the newly selected data to the grid 
+						for (var dIndex = 0; dIndex < gridData.length; dIndex++){
+							$("#grid").jqGrid('addRowData', nrows + dIndex + 1, gridData[dIndex], 'last');
+						}
+
+						$('#grid').jqGrid("setSelection", nrows + gridData.length, true);
 						statusLogger.appendStatus('Added (' + gridData.length + ') clients to table')
 					}, function() {
 						// error 	
