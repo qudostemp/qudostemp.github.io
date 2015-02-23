@@ -60,7 +60,7 @@ $(document).ready(function() {
 
             var addClientBookmarkletCode = "                            \
                 function getBookmarkletBaseUrl() {                      \
-                    if(window.qudos_bookmarklet_mode = 'DEV') {         \
+                    if(window.qudos_bookmarklet_mode === true) {                 \
                         return window.location.protocol + '//localhost:8000';       \
                     } else {                                                        \
                         return window.location.protocol + '//rajeevs.github.io';    \
