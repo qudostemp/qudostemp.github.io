@@ -60,7 +60,8 @@
 		if (window.qudos_bookmarklet_mode) {
 			return 'http://localhost:5000'; // localhost proxy URL to get around X-domain issues
 		} else {
-			return 'https://frozen-taiga-8902.herokuapp.com'; // heroku proxy URL to get around X-domain issues
+			return 'https://bookmarklet-api.herokuapp.com' ;
+			//return 'https://frozen-taiga-8902.herokuapp.com'; // heroku proxy URL to get around X-domain issues
 		}
 	}
 

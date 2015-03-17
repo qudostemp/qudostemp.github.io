@@ -50,7 +50,7 @@
 				if(window.qudos_bookmarklet_mode) {
 					var form_base_url = window.location.protocol +  "//localhost:8000";
 				} else {
-					var form_base_url = window.location.protocol +  "//rajeevs.github.io"; 
+					var form_base_url = window.location.protocol +  "//qudostemp.github.io"; 
 				}
 				return form_base_url;
 			}

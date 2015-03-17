@@ -53,7 +53,7 @@ $(document).ready(function() {
             var sheet_name_code = "window.qudos_bookmarklet_sheetName = '" + sheetName + "';";
             var bookmarklet_mode_code = "window.qudos_bookmarklet_mode = " + dev_mode + ";";
 
-        	var markCompanyBookmarkletCode = "if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src= window.location.protocol + '//rajeevs.github.io/markcompanybookmarklet.js?';};";
+        	var markCompanyBookmarkletCode = "if(window.myBookmarklet!==undefined){myBookmarklet();}else{document.body.appendChild(document.createElement('script')).src= window.location.protocol + '//qudostemp.github.io/markcompanybookmarklet.js?';};";
             markCompanyBookmarkletCode += email_code;
             markCompanyBookmarkletCode += sheet_name_code;
             markCompanyBookmarkletCode += bookmarklet_mode_code;
@@ -63,7 +63,7 @@ $(document).ready(function() {
                     if(window.qudos_bookmarklet_mode === true) {                 \
                         return window.location.protocol + '//localhost:8000';       \
                     } else {                                                        \
-                        return window.location.protocol + '//rajeevs.github.io';    \
+                        return window.location.protocol + '//qudostemp.github.io';    \
                     }                                                               \
                 }                                                                   \
                                                                                     \
@@ -78,7 +78,6 @@ $(document).ready(function() {
                 };  \
             ";
 
-            //var addClientBookmarkletCode = "if(window.clientBookmarklet!==undefined){clientBookmarklet();}else{document.body.appendChild(document.createElement('script')).src= window.location.protocol + '//rajeevs.github.io/addclientbookmarklet.js?';};";
             addClientBookmarkletCode += email_code;
             addClientBookmarkletCode += sheet_name_code;
             addClientBookmarkletCode += bookmarklet_mode_code;
